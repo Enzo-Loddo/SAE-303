@@ -1,9 +1,9 @@
 - URL site WEB :
 - URL Notebook Observable :
-- Nom :
-- Prénom :
-- Nom binome :
-- Prénom binome :
+- Nom :Loddo
+- Prénom :Enzo
+- Nom binome :Menigoz
+- Prénom binome :Ewan
 
 # Remarques :
 
