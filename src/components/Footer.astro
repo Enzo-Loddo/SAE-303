@@ -4,7 +4,7 @@ const liensPages = MENU.filter((m) => m.href);
 const annee = new Date().getFullYear();
 ---
 <footer class="mt-20 bg-ink text-paper">
-  <!-- Bandeau décoratif : les trois couleurs des territoires -->
+
   <div class="flex h-1.5" aria-hidden="true">
     {TERRITOIRES.map((t) => <div class="flex-1" style={`background:${t.couleur}`}></div>)}
   </div>
@@ -52,6 +52,13 @@ const annee = new Date().getFullYear();
     </div>
   </div>
 
+  <div class="border-t border-paper/20">
+    <ul class="mx-auto flex max-w-5xl flex-wrap gap-2 px-4 py-4 text-xs" aria-label="Repères">
+      {["Données ouvertes", "Source : Météo-France", "Open Data University · Défi C", "Accessible : texte alternatif sur chaque graphique", "Mis à jour en octobre 2026"].map((b) => (
+        <li class="rounded-full border border-paper/30 px-3 py-1 text-paper/90">{b}</li>
+      ))}
+    </ul>
+  </div>
   <div class="border-t border-paper/20">
     <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4 text-xs text-paper/70">
       <p>© {annee} {SITE.auteurs}. Projet pédagogique.</p>

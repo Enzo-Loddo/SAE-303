@@ -1,6 +1,4 @@
 ---
-// Groupe de boutons « pilules » accessible (cases à cocher ou boutons radio natifs).
-// options : [{ value, label, couleur? }]   valeur : texte (radio) ou tableau de textes (cases cochées)
 const { legende, name, type = "radio", options, valeur } = Astro.props;
 const coche = (v) => (Array.isArray(valeur) ? valeur.includes(v) : valeur === v);
 ---

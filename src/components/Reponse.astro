@@ -1,0 +1,10 @@
+---
+const { verdict, chiffre } = Astro.props;
+---
+<section class="reveal mx-auto my-12 max-w-3xl rounded-xl border border-line border-l-8 border-l-accent bg-white p-6 shadow-sm" aria-labelledby="reponse-titre">
+  <p class="text-sm font-bold uppercase tracking-widest text-accent">Notre réponse</p>
+  <h2 id="reponse-titre" class="mt-2 text-2xl font-bold leading-snug">{verdict}</h2>
+  {chiffre && <p class="mt-3 font-serif text-lg text-accent">{chiffre}</p>}
+  <div class="mt-4 space-y-3 leading-relaxed"><slot /></div>
+  <p class="mt-5 border-t border-line pt-3 text-sm text-ink/80"><strong>À garder en tête.</strong> <slot name="limite" /></p>
+</section>

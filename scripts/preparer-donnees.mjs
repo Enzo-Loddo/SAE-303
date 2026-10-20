@@ -1,9 +1,3 @@
-// Prépare les fichiers de données LÉGERS utilisés par le site, en reprenant
-// exactement les calculs du notebook Observable (même nettoyage, mêmes jointures).
-// Usage :  node scripts/preparer-donnees.mjs
-// Entrée  : data-source/donnees_mensuelles_DOM.json (gros fichier, hors dépôt)
-//           src/assets/stations_DOM.json, src/assets/projections_synthese_DOM.json
-// Sortie  : src/data/*.json  (2 décimales, seulement les colonnes utiles)
 import * as d3 from "d3";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 
@@ -15,12 +9,10 @@ const stations = lire("src/assets/stations_DOM.json");
 const projections = lire("src/assets/projections_synthese_DOM.json");
 const config = { anneeDebut: 1970, refDebut: 1991, refFin: 2020, minAnneesRef: 25, garderNonHomogene: true };
 
-// ── Nettoyage (cellule mensuelPropre du notebook)
 const mensuelPropre = mensuel
   .map((d) => ({ ...d, mois: +d.mois }))
   .filter((d) => d.annee >= config.anneeDebut && Number.isFinite(d.valeur) && (config.garderNonHomogene || d.q_hom === 1));
 
-// ── Années complètes (12 mois) : moyenne pour TN/TX, somme pour RR (cellule annuel)
 const annuel = d3
   .flatRollup(
     mensuelPropre,
@@ -30,14 +22,12 @@ const annuel = d3
   .map(([territoire, variable, num_poste, annee, valeur]) => ({ territoire, variable, num_poste, annee, valeur }))
   .filter((d) => d.valeur !== null);
 
-// ── Jointure TX + TN (cellule annuelTM)
 const cle = (d) => `${d.num_poste}-${d.annee}`;
 const tnParCle = new Map(annuel.filter((d) => d.variable === "TN").map((d) => [cle(d), d.valeur]));
 const annuelTM = annuel
   .filter((d) => d.variable === "TX" && tnParCle.has(cle(d)))
   .map((d) => ({ territoire: d.territoire, num_poste: d.num_poste, annee: d.annee, valeur: (d.valeur + tnParCle.get(cle(d))) / 2 }));
 
-// ── Anomalies par rapport à 1991-2020 de chaque station (cellule anomalies)
 const anomalies = (lignes, { relatif = false } = {}) => {
   const ref = new Map(
     d3.rollups(
@@ -61,7 +51,6 @@ const parTerritoire = (lignes, resume = d3.mean) =>
 const tmTerritoire = parTerritoire(anomaliesTM);
 const rrTerritoire = parTerritoire(anomaliesRR, d3.median);
 
-// ── Tendance de chaque station, en °C par décennie (cellule tendancesStations)
 const pente = (v) => {
   const mx = d3.mean(v, (d) => d.annee), my = d3.mean(v, (d) => d.anomalie);
   return d3.sum(v, (d) => (d.annee - mx) * (d.anomalie - my)) / d3.sum(v, (d) => (d.annee - mx) ** 2);
@@ -75,7 +64,6 @@ const tendancesStations = d3.groups(anomaliesTM, (d) => d.num_poste)
       debut: d3.min(v, (d) => d.annee), fin: d3.max(v, (d) => d.annee), nbAnnees: v.length, tendance: 10 * pente(v) };
   });
 
-// ── Projections de température moyenne (cellule projectionsTMm) + référence 1991-2020 (niveau hist)
 const horizons = ["2030", "2050", "2100"];
 const lignes = d3.flatRollup(
   projections.filter((d) => d.indicateur === "TMm" && d.type_ecart === "abs" && d.niveau !== "hist"),
@@ -88,7 +76,6 @@ const reference = Object.fromEntries(
   projections.filter((d) => d.indicateur === "TMm" && d.niveau === "hist" && d.type_ecart === "abs" && d.statistique === "q50")
     .map((d) => [d.territoire, d.valeur_moyenne_spatiale]));
 
-// ── Écriture : 2 décimales
 const r = (x, n = 2) => (x == null ? x : +x.toFixed(n));
 mkdirSync("src/data", { recursive: true });
 const ecrire = (nom, data) => { writeFileSync(`src/data/${nom}`, JSON.stringify(data)); console.log(nom, Array.isArray(data) ? data.length + " lignes" : "ok"); };

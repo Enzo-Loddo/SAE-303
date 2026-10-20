@@ -10,7 +10,6 @@ import { SITE } from "../config/site.js";
     de dire. Tout ce qui est publié ici peut être vérifié.
   </p>
 
-  <!-- 1. SOURCES -->
   <section aria-labelledby="t-sources" class="mt-16">
     <h2 id="t-sources" class="text-2xl font-bold">1. Sources et licences</h2>
     <div class="mt-5 overflow-x-auto">
@@ -30,7 +29,7 @@ import { SITE } from "../config/site.js";
             <th scope="row" class="border border-line p-3">Séries longues homogénéisées (LSH), Outre-mer</th>
             <td class="border border-line p-3">Météo-France, via data.gouv.fr</td>
             <td class="border border-line p-3">Températures minimales (TN), maximales (TX) et précipitations (RR) mensuelles des stations de Martinique, La Réunion et Nouvelle-Calédonie</td>
-            <td class="border border-line p-3"><em>[À VÉRIFIER sur la page du jeu de données]</em></td>
+            <td class="border border-line p-3"><em>Licence Ouverte (Etalab) à confirmer sur la page du jeu de données</em></td>
             <td class="border border-line p-3">19 octobre 2026</td>
           </tr>
           <tr>
@@ -47,7 +46,6 @@ import { SITE } from "../config/site.js";
     </div>
   </section>
 
-  <!-- 2. TRAITEMENTS -->
   <section aria-labelledby="t-traitements" class="mt-16">
     <h2 id="t-traitements" class="text-2xl font-bold">2. Ce que nous avons fait aux données</h2>
     <ul class="mt-4 max-w-3xl list-disc space-y-3 pl-6">
@@ -68,7 +66,7 @@ import { SITE } from "../config/site.js";
       </li>
       <li>
         <strong>Mois non homogénéisés.</strong> Nous les <em>conservons</em> (8 414 mois). Ce choix est discuté
-        dans la section Limites. <em>[À COMPLÉTER : justification de l'équipe, avec vos mots]</em>
+        dans la section Limites. Les écarter retirerait une part importante des mesures de La Réunion et de la Nouvelle-Calédonie ; nous préférons les garder et le dire.
       </li>
       <li>
         <strong>Période d'étude.</strong> Les mesures sont retenues à partir de 1970. La référence est la moyenne 1991-2020 de chaque station.
@@ -79,7 +77,7 @@ import { SITE } from "../config/site.js";
       </li>
       <li>
         <strong>Température moyenne.</strong> Elle vaut (TN + TX) / 2, calculée pour les années où une station mesure les deux.
-        Une année n'est comptée que si elle contient ses 12 mois <em>[À VÉRIFIER dans le notebook]</em>.
+        Une année n'est comptée que si elle contient ses 12 mois.
       </li>
       <li>
         <strong>Projections.</strong> Pour chaque territoire, nous avons pris la médiane de l'ensemble de modèles (avec les valeurs
@@ -88,7 +86,6 @@ import { SITE } from "../config/site.js";
     </ul>
   </section>
 
-  <!-- 3. JOINTURES -->
   <section aria-labelledby="t-jointures" class="mt-16">
     <h2 id="t-jointures" class="text-2xl font-bold">3. Ce que nos croisements ont laissé de côté</h2>
     <p class="mt-3 max-w-3xl">
@@ -105,7 +102,6 @@ import { SITE } from "../config/site.js";
     </p>
   </section>
 
-  <!-- 4. LIMITES -->
   <section aria-labelledby="t-limites" class="mt-16">
     <h2 id="t-limites" class="text-2xl font-bold">4. Limites et biais</h2>
     <ul class="mt-4 max-w-3xl list-disc space-y-3 pl-6">
@@ -113,28 +109,45 @@ import { SITE } from "../config/site.js";
       <li><strong>Inégalité entre territoires.</strong> La Nouvelle-Calédonie, bien plus étendue, a bien plus de stations. Les comparaisons ne pèsent pas les territoires de la même façon.</li>
       <li><strong>Données homogénéisées et non homogénéisées.</strong> Une partie des mois n'a pas été corrigée des changements d'instrument ou de lieu : c'est près de 19 % des mois de température à La Réunion et 15 % en Nouvelle-Calédonie.</li>
       <li><strong>Stations côtières ou en altitude.</strong> Une station n'est pas représentative de toute l'île : l'altitude et la distance à la mer changent la température.</li>
-      <li><strong>Projections par paliers, pas par années.</strong> Elles décrivent « le territoire quand le monde atteint +1,5, +2 ou +3 °C », pas une date. <em>[À COMPLÉTER : comment nous traduisons cela pour « 2050 »]</em></li>
+      <li><strong>Projections par paliers, pas par années.</strong> Elles décrivent « le territoire quand le monde atteint +1,5, +2 ou +3 °C », pas une date. Pour parler de 2030, 2050 et 2100, nous classons les trois niveaux de réchauffement de chaque territoire par valeur croissante (le plus bas devient 2030, le suivant 2050, le plus élevé 2100). C'est une convention de lecture, pas une date prévue par Météo-France.</li>
       <li><strong>Moyenne spatiale non pondérée.</strong> Les mailles des projections ne sont pas pondérées par leur surface.</li>
       <li><strong>Température moyenne approchée.</strong> (TN + TX) / 2 n'est pas la moyenne réelle de la journée.</li>
     </ul>
   </section>
 
-  <!-- 5. DONNÉES ET CODE -->
+  <section aria-labelledby="t-routes" class="mt-16">
+    <h2 id="t-routes" class="text-2xl font-bold">5. Routes d'export des graphiques</h2>
+    <p class="mt-3 max-w-3xl">La question qui tranche : <em>est-ce que ça doit bouger chez le lecteur ?</em> Pour nos cinq graphiques, la réponse est oui, donc la route B (dessiné dans le navigateur à partir d'un petit fichier de données).</p>
+    <div class="mt-5 overflow-x-auto">
+      <table class="w-full min-w-[36rem] border-collapse bg-white text-left text-sm">
+        <caption class="sr-only">Route d'export de chaque graphique</caption>
+        <thead class="bg-paper"><tr><th scope="col" class="border border-line p-3">Graphique</th><th scope="col" class="border border-line p-3">Route</th><th scope="col" class="border border-line p-3">Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><th scope="row" class="border border-line p-3">1 · Années chaudes</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur filtre les territoires et la période ; le résumé se recalcule.</td></tr>
+          <tr><th scope="row" class="border border-line p-3">2 · Cartes des stations</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Carte à zoomer, avec survol et fenêtre d'information par station (Leaflet).</td></tr>
+          <tr><th scope="row" class="border border-line p-3">3 · Évolution depuis 1970</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur choisit un territoire ; titre et chiffres se recalculent.</td></tr>
+          <tr><th scope="row" class="border border-line p-3">4 · Écart en 2050</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur choisit l'horizon (2030, 2050 ou 2100).</td></tr>
+          <tr><th scope="row" class="border border-line p-3">5 · Pluie et chaleur</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Valeurs réelles au survol. Un rendu au build (A) serait possible, mais perdrait la lecture des valeurs en °C et en %.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 max-w-3xl text-sm">Les fichiers envoyés au navigateur sont préfiltrés : seulement les colonnes utiles, deux décimales. Les fichiers bruts du défi ne sont pas dans le dépôt.</p>
+  </section>
+
   <section aria-labelledby="t-donnees" class="mt-16">
-    <h2 id="t-donnees" class="text-2xl font-bold">5. Refaire le calcul soi-même</h2>
+    <h2 id="t-donnees" class="text-2xl font-bold">6. Refaire le calcul soi-même</h2>
     <ul class="mt-4 max-w-3xl list-disc space-y-2 pl-6">
       <li><a class="underline underline-offset-4" href={SITE.notebook}>Notebook Observable</a> : tout le nettoyage, les jointures et les calculs, cellule par cellule.</li>
-      <li>Données préparées pour le site : <em>[À COMPLÉTER : liens vers les fichiers JSON allégés une fois publiés]</em></li>
-      <li>Code du site : <em>[À COMPLÉTER : lien du dépôt GitHub]</em></li>
+      <li>Données préparées pour le site : <a class="underline underline-offset-4" href="/donnees/anomalies-temperature.json">anomalies de température</a>, <a class="underline underline-offset-4" href="/donnees/anomalies-pluie.json">anomalies de pluie</a>, <a class="underline underline-offset-4" href="/donnees/tendances-stations.json">tendances par station</a>, <a class="underline underline-offset-4" href="/donnees/projections-tmm.json">projections</a> (colonnes utiles seulement, deux décimales).</li>
+      <li>Code du site : <a class="underline underline-offset-4" href="https://github.com/Enzo-Loddo/SAE-303">github.com/Enzo-Loddo/SAE-303</a></li>
     </ul>
   </section>
 
-  <!-- 6. IA -->
   <section aria-labelledby="t-ia" class="mt-16">
-    <h2 id="t-ia" class="text-2xl font-bold">6. Usage de l'IA</h2>
+    <h2 id="t-ia" class="text-2xl font-bold">7. Usage de l'IA</h2>
     <p class="mt-3 max-w-3xl">
       Une IA (Claude) a aidé à nettoyer les données, à écrire une partie du code et à rédiger des textes. Chaque usage est déclaré dans notre
-      journal IA, remis avec le notebook. <em>[À COMPLÉTER : vos propres relectures et décisions]</em>
+      journal IA, remis avec le notebook. Les choix de représentation, les questions et les conclusions sont les nôtres ; les chiffres affichés sont recalculés et comparés aux résultats du notebook.
     </p>
   </section>
 </Layout>

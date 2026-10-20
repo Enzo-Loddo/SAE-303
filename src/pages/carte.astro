@@ -1,8 +1,13 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
 import V2Carte from "../components/graphiques/V2Carte.astro";
+import Reponse from "../components/Reponse.astro";
 ---
 <QuestionPage slug="carte">
   <V2Carte />
-  <p class="rounded border border-dashed border-line bg-white p-4"><em>[À COMPLÉTER : réponse à la question en 2 ou 3 phrases.]</em></p>
+  <Reponse verdict="Non : toutes les stations se réchauffent, mais pas au même rythme." chiffre="De +0,15 à +0,34 °C par décennie selon la station.">
+<p>Aucune station n'échappe au réchauffement : toutes les valeurs sont positives. En <strong>Martinique</strong>, les trois stations sont proches (+0,29 à +0,34 °C par décennie). À <strong>La Réunion</strong>, elles vont de +0,15 à +0,22 °C. C'est en <strong>Nouvelle-Calédonie</strong>, avec 15 stations, que l'écart interne est le plus grand : de +0,20 à +0,31 °C par décennie.</p>
+<p>Cet écart interne (jusqu'à 0,11 °C par décennie) est du même ordre que celui qui sépare les médianes de la Martinique (+0,31) et de La Réunion (+0,20). Le réchauffement n'est donc pas une valeur unique par île : selon l'endroit, le rythme change sensiblement, surtout en Nouvelle-Calédonie.</p>
+    <Fragment slot="limite">Avec seulement 3 ou 4 stations en Martinique et à La Réunion, il est impossible de dire que le réchauffement est « concentré » dans une zone précise de ces îles. Une station représente aussi son altitude et sa distance à la mer, pas toute l'île.</Fragment>
+  </Reponse>
 </QuestionPage>

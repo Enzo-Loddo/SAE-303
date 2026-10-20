@@ -1,31 +1,21 @@
-// ─────────────────────────────────────────────────────────────
-// Fonctions de dessin des 5 graphiques, reprises du notebook Observable.
-// Chaque fonction est PURE : elle reçoit ses données en paramètres et ne lit
-// rien d'autre. Elle renvoie un élément DOM (graphique Plot) à insérer.
-// ─────────────────────────────────────────────────────────────
 import * as Plot from "@observablehq/plot";
 import * as d3 from "d3";
 
 export const TERRITOIRES = ["Martinique", "La Réunion", "Nouvelle-Calédonie"];
-// MÊMES couleurs que les silhouettes de l'accueil (palette de DONNÉES, voir global.css)
 export const COULEURS = { "Martinique": "#0072B2", "La Réunion": "#D55E00", "Nouvelle-Calédonie": "#009E73" };
 const ROUGE = "#d6604d";
 const BLEU = "#2166ac";
 
-// ── formats français
 const virgule = (s) => s.replace(".", ",");
 export const signe = (x, n = 2) => (x > 0 ? "+" : "") + virgule(x.toFixed(n));
 export const fmtC = (x, n = 2) => `${signe(x, n)} °C`;
 export const fmtP = (x) => (x > 0 ? "+" : "") + Math.round(x) + " %";
 
-// ── pente d'une régression (°C par an) sur des lignes {annee, anomalie}
 export const pente = (v) => {
   const mx = d3.mean(v, (d) => d.annee), my = d3.mean(v, (d) => d.anomalie);
   return d3.sum(v, (d) => (d.annee - mx) * (d.anomalie - my)) / d3.sum(v, (d) => (d.annee - mx) ** 2);
 };
 
-// ── Animation : le tracé se dessine, les points apparaissent un à un.
-// Active seulement si la page a la classe .js (absente en « mouvement réduit »).
 export function animer(element) {
   if (!document.documentElement.classList.contains("js")) return element;
   element.querySelectorAll('[aria-label="line"] path').forEach((p) => {
@@ -39,7 +29,6 @@ export function animer(element) {
   return element;
 }
 
-/* ═══════════════ V1 · Les années les plus chaudes (essaim) ═══════════════ */
 export function graphiqueDistribution(tm, { width = 720, territoires = TERRITOIRES, debut, fin } = {}) {
   const [a0, a1] = d3.extent(tm, (d) => d.annee);
   debut = Math.min(debut ?? a0, fin ?? a1);
@@ -60,7 +49,6 @@ export function graphiqueDistribution(tm, { width = 720, territoires = TERRITOIR
     height: 70 + 150 * Math.max(1, choix.length),
     marginLeft: width < 560 ? 90 : 130,
     marginRight: 20,
-    // échelles fixes : quand on filtre, les points ne changent ni de place ni de couleur
     x: { domain: d3.extent(tm, (d) => d.anomalie), nice: true, label: "Écart de l'année à la moyenne 1991-2020 (°C) →", tickFormat: "+.1f", grid: true },
     fy: { domain: choix, label: null, axis: "left" },
     color: couleur,
@@ -79,11 +67,9 @@ export function graphiqueDistribution(tm, { width = 720, territoires = TERRITOIR
   return { plot: animer(plot), legende, resume, nTop, debut, fin };
 }
 
-/* ═══════════════ V3 · Évolution (la « recette exportable » du notebook) ═══════════════ */
 export function courbesAnomalies(donnees, { width = 640, height = 380, lissage = 10, couleurs = COULEURS } = {}) {
   const lignes = [...donnees].sort((a, b) => a.annee - b.annee);
   const territoires = [...new Set(lignes.map((d) => d.territoire))];
-  // tendance : moyenne glissante centrée sur `lissage` ans, calculée territoire par territoire
   const avant = Math.floor(lissage / 2);
   const tendances = territoires.flatMap((t) => {
     const serie = lignes.filter((d) => d.territoire === t);
@@ -110,7 +96,6 @@ export function courbesAnomalies(donnees, { width = 640, height = 380, lissage =
   return { plot: animer(plot), legende: Plot.legend({ color: couleur, width: 360 }) };
 }
 
-// Tendance de chaque territoire (°C par décennie), du plus rapide au plus lent
 export function tendancesTerritoires(donnees) {
   return d3.groups(donnees, (d) => d.territoire).map(([t, v]) => {
     const p = pente(v);
@@ -118,10 +103,8 @@ export function tendancesTerritoires(donnees) {
   }).sort((a, b) => b.parDecennie - a.parDecennie);
 }
 
-/* ═══════════════ V4 · Écart à l'horizon choisi ═══════════════ */
 export function graphiquePrevisions({ projections, reference }, tm, { width = 720, horizon = "2050", anneeActuelle = 2026 } = {}) {
   const proj = projections.filter((d) => d.horizon === horizon);
-  // « aujourd'hui » : droite de tendance des écarts observés depuis 1970, prolongée jusqu'en 2026
   const aujourdhui = TERRITOIRES.map((t) => {
     const v = tm.filter((d) => d.territoire === t);
     const mx = d3.mean(v, (d) => d.annee), my = d3.mean(v, (d) => d.anomalie);
@@ -136,7 +119,6 @@ export function graphiquePrevisions({ projections, reference }, tm, { width = 72
     y: { domain: TERRITOIRES, label: null, padding: 0.4 },
     marks: [
       Plot.ruleX([0], { stroke: "#333" }),
-      // la marge d'incertitude : 90 % des simulations tombent dans cette bande
       Plot.ruleY(proj, { y: "territoire", x1: "q05", x2: "q95", stroke: ROUGE, strokeOpacity: 0.3, strokeWidth: 16 }),
       Plot.link(proj, { y: "territoire", x1: (d) => ecartAujourdhui.get(d.territoire), x2: "q50", stroke: "#999", strokeDasharray: "3,3", markerEnd: "arrow" }),
       Plot.dot(aujourdhui, { y: "territoire", x: "ecart", r: 7, fill: "white", stroke: "#333", strokeWidth: 2, tip: true,
@@ -154,7 +136,6 @@ export function graphiquePrevisions({ projections, reference }, tm, { width = 72
   return { plot: animer(plot), titreEcart, enAvance, anneeActuelle };
 }
 
-/* ═══════════════ V5 · La pluie suit-elle la chaleur ? ═══════════════ */
 export function graphiquePluieChaleur(tm, rr, { width = 900 } = {}) {
   const pluie = new Map(rr.map((d) => [`${d.territoire}-${d.annee}`, d.anomalie]));
   const climat = tm.filter((d) => pluie.has(`${d.territoire}-${d.annee}`))
@@ -162,10 +143,10 @@ export function graphiquePluieChaleur(tm, rr, { width = 900 } = {}) {
   const lignes = TERRITOIRES.flatMap((t) => {
     const v = climat.filter((d) => d.territoire === t).sort((a, b) => a.annee - b.annee);
     const ref = v.filter((d) => d.annee >= 1991 && d.annee <= 2020);
-    const sdC = d3.deviation(ref, (d) => d.chaleur); // variation habituelle d'une année à l'autre
+    const sdC = d3.deviation(ref, (d) => d.chaleur);
     const sdP = d3.deviation(ref, (d) => d.pluie);
     return v.flatMap((d, i) => {
-      const f = v.slice(Math.max(0, i - 5), i + 5); // moyenne glissante centrée sur 10 ans
+      const f = v.slice(Math.max(0, i - 5), i + 5);
       const chaleur = d3.mean(f, (x) => x.chaleur), p = d3.mean(f, (x) => x.pluie);
       return [
         { territoire: t, annee: d.annee, serie: "Chaleur", indice: chaleur / sdC, texte: fmtC(chaleur) },
