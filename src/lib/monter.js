@@ -29,4 +29,13 @@ export function surLargeur(el, fn) {
 }
 
 // Remplace le contenu de la zone du graphique
-export const afficher = (zone, ...elements) => zone.replaceChildren(...elements);
+// Les animations de tracé ne se jouent qu'une fois : après la première apparition,
+// le cadre reçoit data-joue et les redessins (filtres, survol) n'animent plus.
+export function afficher(zone, ...elements) {
+  zone.replaceChildren(...elements);
+  const cadre = zone.closest("figure");
+  if (cadre && !cadre.dataset.programme) {
+    cadre.dataset.programme = "1";
+    setTimeout(() => { cadre.dataset.joue = ""; }, 4500);
+  }
+}

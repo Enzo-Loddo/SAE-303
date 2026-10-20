@@ -3,14 +3,15 @@ import Layout from "../layouts/Layout.astro";
 import { SITE } from "../config/site.js";
 ---
 <Layout title="Méthode" description="Sources, traitements, limites et biais de l'enquête Climat Outre-Mer : tout ce qui permet de vérifier nos résultats.">
-  <h1 class="max-w-3xl text-3xl font-bold sm:text-4xl">Méthode : comment vérifier ce que nous avançons</h1>
+  <p class="hero-in text-sm font-bold uppercase tracking-widest text-accent">Méthode</p>
+  <h1 class="hero-in mt-3 max-w-3xl text-3xl font-bold leading-tight sm:text-5xl">Méthode : comment vérifier ce que nous avançons</h1>
   <p class="mt-5 max-w-2xl text-lg">
     Cette page dit d'où viennent les données, ce que nous en avons fait, et ce qu'elles ne permettent pas
     de dire. Tout ce qui est publié ici peut être vérifié.
   </p>
 
   <!-- 1. SOURCES -->
-  <section aria-labelledby="t-sources" class="mt-12">
+  <section aria-labelledby="t-sources" class="mt-16">
     <h2 id="t-sources" class="text-2xl font-bold">1. Sources et licences</h2>
     <div class="mt-5 overflow-x-auto">
       <table class="w-full min-w-[40rem] border-collapse bg-white text-left text-sm">
@@ -47,7 +48,7 @@ import { SITE } from "../config/site.js";
   </section>
 
   <!-- 2. TRAITEMENTS -->
-  <section aria-labelledby="t-traitements" class="mt-12">
+  <section aria-labelledby="t-traitements" class="mt-16">
     <h2 id="t-traitements" class="text-2xl font-bold">2. Ce que nous avons fait aux données</h2>
     <ul class="mt-4 max-w-3xl list-disc space-y-3 pl-6">
       <li>
@@ -88,7 +89,7 @@ import { SITE } from "../config/site.js";
   </section>
 
   <!-- 3. JOINTURES -->
-  <section aria-labelledby="t-jointures" class="mt-12">
+  <section aria-labelledby="t-jointures" class="mt-16">
     <h2 id="t-jointures" class="text-2xl font-bold">3. Ce que nos croisements ont laissé de côté</h2>
     <p class="mt-3 max-w-3xl">
       Associer la température minimale et la température maximale d'une même station n'est possible que si les deux existent.
@@ -105,7 +106,7 @@ import { SITE } from "../config/site.js";
   </section>
 
   <!-- 4. LIMITES -->
-  <section aria-labelledby="t-limites" class="mt-12">
+  <section aria-labelledby="t-limites" class="mt-16">
     <h2 id="t-limites" class="text-2xl font-bold">4. Limites et biais</h2>
     <ul class="mt-4 max-w-3xl list-disc space-y-3 pl-6">
       <li><strong>Peu de stations.</strong> La Martinique repose sur 3 stations de température : un résultat sur l'île entière reste fragile.</li>
@@ -119,7 +120,7 @@ import { SITE } from "../config/site.js";
   </section>
 
   <!-- 5. DONNÉES ET CODE -->
-  <section aria-labelledby="t-donnees" class="mt-12">
+  <section aria-labelledby="t-donnees" class="mt-16">
     <h2 id="t-donnees" class="text-2xl font-bold">5. Refaire le calcul soi-même</h2>
     <ul class="mt-4 max-w-3xl list-disc space-y-2 pl-6">
       <li><a class="underline underline-offset-4" href={SITE.notebook}>Notebook Observable</a> : tout le nettoyage, les jointures et les calculs, cellule par cellule.</li>
@@ -129,7 +130,7 @@ import { SITE } from "../config/site.js";
   </section>
 
   <!-- 6. IA -->
-  <section aria-labelledby="t-ia" class="mt-12">
+  <section aria-labelledby="t-ia" class="mt-16">
     <h2 id="t-ia" class="text-2xl font-bold">6. Usage de l'IA</h2>
     <p class="mt-3 max-w-3xl">
       Une IA (Claude) a aidé à nettoyer les données, à écrire une partie du code et à rédiger des textes. Chaque usage est déclaré dans notre

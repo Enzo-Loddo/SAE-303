@@ -1,72 +1,82 @@
 ---
 import { SITE, MENU, QUESTIONS } from "../config/site.js";
-// Page courante, sans slash final, pour marquer le lien actif.
 const actuel = Astro.url.pathname.replace(/\/$/, "") || "/";
 const dansQuestions = QUESTIONS.some((q) => actuel === `/${q.slug}`);
-const lien = "underline-offset-4 hover:underline aria-[current=page]:font-bold aria-[current=page]:underline";
+const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-paper aria-[current=page]:bg-accent aria-[current=page]:text-paper";
 ---
-<header class="border-b border-line bg-white">
-  <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3">
-    <a href="/" class="flex items-center gap-3 font-serif text-xl font-bold text-accent">
-      <img src="/logo.svg" width="36" height="36" alt="" />
+<header id="entete" class="sticky top-0 z-50 border-b border-line bg-white/85 backdrop-blur transition-shadow duration-300 [&.defile]:shadow-md">
+  <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
+    <a href="/" class="group flex items-center gap-3 font-serif text-xl font-bold text-accent">
+      <img src="/logo.svg" width="36" height="36" alt="" class="transition-transform duration-500 group-hover:rotate-[360deg]" />
       <span>{SITE.nom}</span>
     </a>
     <nav aria-label="Navigation principale">
-      <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+      <ul class="flex flex-wrap items-center gap-1">
         {MENU.map((item) =>
           item.questions ? (
             <li class="relative">
-              <details id="menu-questions" class="group">
+              <details id="menu-questions" class="group/menu">
                 <summary
                   class:list={[
-                    "flex cursor-pointer list-none items-center gap-1 underline-offset-4 hover:underline [&::-webkit-details-marker]:hidden",
-                    dansQuestions && "font-bold underline",
+                    "flex cursor-pointer list-none items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-paper [&::-webkit-details-marker]:hidden",
+                    dansQuestions ? "bg-accent text-paper hover:bg-accent" : "",
                   ]}
                 >
                   {item.label}
-                  <span aria-hidden="true" class="text-xs transition-transform group-open:rotate-180">▾</span>
+                  <span aria-hidden="true" class="text-xs transition-transform group-open/menu:rotate-180">▾</span>
                 </summary>
-                <ul class="absolute left-0 z-40 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded border border-line bg-white p-2 shadow-lg sm:left-auto sm:right-0">
-                  {QUESTIONS.map((q) => (
-                    <li>
-                      <a
-                        href={`/${q.slug}`}
-                        aria-current={actuel === `/${q.slug}` ? "page" : undefined}
-                        class="block rounded px-3 py-2 hover:bg-paper aria-[current=page]:bg-paper aria-[current=page]:font-bold"
-                      >
-                        <span class="block text-sm font-bold text-accent">{q.menu}</span>
-                        <span class="block text-sm">{q.question}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                <div class="menu-liste absolute left-0 z-40 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-line bg-white p-2 shadow-xl sm:left-auto sm:right-0">
+                  <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wide text-ink/60">Parcours de lecture</p>
+                  <ol>
+                    {QUESTIONS.map((q, i) => (
+                      <li>
+                        <a
+                          href={`/${q.slug}`}
+                          aria-current={actuel === `/${q.slug}` ? "page" : undefined}
+                          class="flex items-start gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-paper aria-[current=page]:bg-paper"
+                        >
+                          <span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-paper">{i + 1}</span>
+                          <span class="text-sm leading-snug">
+                            <span class="block font-bold text-accent">{q.menu.split("·")[1].trim()}</span>
+                            <span class="block text-ink/80">{q.question}</span>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
               </details>
             </li>
           ) : (
             <li>
-              <a href={item.href} aria-current={actuel === item.href ? "page" : undefined} class={lien}>
-                {item.label}
-              </a>
+              <a href={item.href} aria-current={actuel === item.href ? "page" : undefined} class={lien}>{item.label}</a>
             </li>
           ),
         )}
       </ul>
     </nav>
   </div>
+  <div id="progression" class="h-1 origin-left scale-x-0 bg-accent" aria-hidden="true"></div>
 </header>
 
 <script>
-  // Menu déroulant : se ferme avec Échap ou un clic à l'extérieur.
-  const menu = document.getElementById("menu-questions");
+  const menu = document.getElementById("menu-questions") as HTMLDetailsElement | null;
   if (menu) {
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && menu.open) {
-        menu.open = false;
-        menu.querySelector("summary")?.focus();
-      }
+      if (e.key === "Escape" && menu.open) { menu.open = false; menu.querySelector("summary")?.focus(); }
     });
-    document.addEventListener("click", (e) => {
-      if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
-    });
+    document.addEventListener("click", (e) => { if (menu.open && !menu.contains(e.target as Node)) menu.open = false; });
   }
+  // Barre de progression de lecture + ombre de l'en-tête au défilement
+  const entete = document.getElementById("entete")!;
+  const barre = document.getElementById("progression")!;
+  let attente = false;
+  const maj = () => {
+    attente = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    barre.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+    entete.classList.toggle("defile", scrollY > 8);
+  };
+  addEventListener("scroll", () => { if (!attente) { attente = true; requestAnimationFrame(maj); } }, { passive: true });
+  maj();
 </script>

@@ -1,0 +1,27 @@
+---
+// Chemin de lecture : 1 → 2 → 3 → 4 → 5 → Conclusion. Les étapes déjà lues sont remplies.
+import { QUESTIONS } from "../config/site.js";
+const actuel = Astro.url.pathname.replace(/\/$/, "");
+const pos = actuel === "/conclusion" ? QUESTIONS.length : QUESTIONS.findIndex((q) => actuel === `/${q.slug}`);
+const etapes = [...QUESTIONS.map((q, i) => ({ href: `/${q.slug}`, court: String(i + 1), titre: q.menu.split("·")[1].trim() })), { href: "/conclusion", court: "✓", titre: "Conclusion" }];
+---
+<nav aria-label="Parcours de lecture" class="parcours">
+  <ol class="flex items-start">
+    {etapes.map((e, i) => (
+      <li class="relative flex flex-1 flex-col items-center text-center">
+        {i > 0 && <span aria-hidden="true" class:list={["absolute right-1/2 top-4 h-0.5 w-full -translate-y-1/2", i <= pos ? "bg-accent" : "bg-line"]}></span>}
+        <a
+          href={e.href}
+          aria-current={i === pos ? "page" : undefined}
+          class:list={[
+            "relative z-10 grid h-8 w-8 place-items-center rounded-full border-2 text-sm font-bold transition-colors",
+            i < pos && "border-accent bg-accent text-paper",
+            i === pos && "border-accent bg-white text-accent ring-4 ring-accent/20",
+            i > pos && "border-line bg-white text-ink/60 hover:border-accent",
+          ]}
+        >{e.court}<span class="sr-only"> — {e.titre}{i === pos ? " (page actuelle)" : ""}</span></a>
+        <span aria-hidden="true" class:list={["mt-1 hidden text-xs sm:block", i === pos ? "font-bold text-accent" : "text-ink/70"]}>{e.titre}</span>
+      </li>
+    ))}
+  </ol>
+</nav>
