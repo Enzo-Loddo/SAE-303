@@ -1,0 +1,56 @@
+---
+import Cadre from "../Cadre.astro";
+import Choix from "../Choix.astro";
+const options = [
+  { value: "Les 3 territoires", label: "Les 3 territoires" },
+  { value: "Martinique", label: "Martinique", couleur: "#0072B2" },
+  { value: "La Réunion", label: "La Réunion", couleur: "#D55E00" },
+  { value: "Nouvelle-Calédonie", label: "Nouvelle-Calédonie", couleur: "#009E73" },
+];
+---
+<Cadre
+  id="v3"
+  titre="La Martinique se réchauffe le plus vite depuis 1970"
+  sousTitre="Écart de la température moyenne annuelle à la moyenne 1991-2020, en °C, lissé sur 10 ans"
+  description="Chaque courbe suit un territoire de 1970 à 2024 : plus elle est <b>raide</b>, plus le réchauffement est rapide."
+  alt="Trois courbes qui montent de 1970 à 2024. La Martinique part le plus bas (environ −1,0 °C) et finit la plus haute (environ +0,65 °C) : c'est la plus forte hausse, environ 1,6 °C. La Réunion monte plus lentement et régulièrement, d'environ −0,55 à +0,45 °C. La Nouvelle-Calédonie se réchauffe surtout entre 1980 et 2000, marque un palier dans les années 2000, puis remonte jusqu'à environ +0,5 °C."
+  source="Météo-France, séries longues homogénéisées (TN et TX), calculs du groupe 14"
+>
+  <div slot="controles">
+    <Choix legende="Territoire affiché" name="v3-territoire" options={options} valeur="Les 3 territoires" />
+  </div>
+</Cadre>
+
+<script>
+  import tm from "../../data/anomalies-temperature.json";
+  import { courbesAnomalies, tendancesTerritoires, signe } from "../../lib/graphiques.js";
+  import { auVisible, largeurDe, surLargeur, afficher } from "../../lib/monter.js";
+
+  const fig = document.getElementById("v3");
+  const zone = fig.querySelector("[data-zone]");
+  const titreEl = fig.querySelector("[data-titre]");
+  const descEl = fig.querySelector("[data-description]");
+
+  function dessiner() {
+    const choix = fig.querySelector('input[name="v3-territoire"]:checked').value;
+    const donnees = choix === "Les 3 territoires" ? tm : tm.filter((d) => d.territoire === choix);
+    const tendances = tendancesTerritoires(donnees);
+    const premier = tendances[0];
+    const f = (x) => "+" + x.toFixed(2).replace(".", ",");
+    titreEl.textContent = tendances.length > 1
+      ? `${premier.t === "La Réunion" ? "La Réunion" : "La " + premier.t} se réchauffe le plus vite depuis 1970`
+      : `${premier.t} : ${f(premier.parDecennie)} °C par décennie depuis 1970`;
+    descEl.innerHTML = `Chaque courbe suit un territoire de 1970 à 2024 : plus elle est <b>raide</b>, plus le réchauffement est rapide. Tendance mesurée : ${tendances.map((d) => `<b>${d.t}</b> ${f(d.parDecennie)} °C par décennie (soit environ ${f(d.total)} °C en tout)`).join(" · ")}. Le menu permet d'afficher un seul territoire ; survoler une courbe donne la valeur de chaque année.`;
+    const r = courbesAnomalies(donnees, { width: largeurDe(zone, 420) });
+    const legende = document.createElement("div");
+    legende.className = "mb-2";
+    legende.append(r.legende);
+    afficher(zone, legende, r.plot);
+  }
+
+  auVisible(zone, () => {
+    dessiner();
+    fig.addEventListener("input", dessiner);
+    surLargeur(zone, dessiner);
+  });
+</script>

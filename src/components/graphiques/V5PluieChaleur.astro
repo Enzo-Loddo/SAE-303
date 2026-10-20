@@ -1,0 +1,34 @@
+---
+import Cadre from "../Cadre.astro";
+---
+<Cadre
+  id="v5"
+  titre="La chaleur monte partout ; la pluie ne suit pas (ou très peu)"
+  sousTitre="Écart à la normale 1991-2020, en écarts-types, lissé sur 10 ans · un graphique par territoire"
+  description="<b style='color:#b2182b'>Rouge : la chaleur</b>, <b style='color:#2166ac'>bleu : la pluie</b>. Pour comparer des °C et des % sur le même axe, chaque courbe est mesurée en « écarts-types » : 0 = année normale, +1 = un écart aussi grand que les variations habituelles d'une année à l'autre. Dans les trois territoires, la courbe rouge monte régulièrement alors que la bleue oscille autour de 0 : la pluie ne suit pas la chaleur. Survoler pour les valeurs réelles en °C et en %."
+  alt="Trois graphiques côte à côte, un par territoire. Dans chacun, la courbe rouge de la chaleur monte régulièrement de 1970 à 2024 : d'environ −2,5 à +1,7 écarts-types en Martinique, de −1,5 à +1,3 à La Réunion, de −1,6 à +1,1 en Nouvelle-Calédonie. La courbe bleue de la pluie oscille autour de 0, entre environ −0,9 et +0,7, sans tendance : elle croise la courbe rouge sans la suivre. En Nouvelle-Calédonie, les années 2020 plus humides la font remonter à la fin, d'où un lien modéré."
+  source="Météo-France, séries longues homogénéisées (TN, TX et précipitations RR), calculs du groupe 14"
+/>
+
+<script>
+  import tm from "../../data/anomalies-temperature.json";
+  import rr from "../../data/anomalies-pluie.json";
+  import { graphiquePluieChaleur } from "../../lib/graphiques.js";
+  import { auVisible, largeurDe, surLargeur, afficher } from "../../lib/monter.js";
+
+  const fig = document.getElementById("v5");
+  const zone = fig.querySelector("[data-zone]");
+
+  function dessiner() {
+    const r = graphiquePluieChaleur(tm, rr, { width: largeurDe(zone, 760) });
+    const legende = document.createElement("div");
+    legende.className = "mb-2";
+    legende.append(r.legende);
+    afficher(zone, legende, r.plot);
+  }
+
+  auVisible(zone, () => {
+    dessiner();
+    surLargeur(zone, dessiner);
+  });
+</script>

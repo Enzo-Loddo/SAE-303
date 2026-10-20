@@ -1,0 +1,20 @@
+---
+// Groupe de boutons « pilules » accessible (cases à cocher ou boutons radio natifs).
+// options : [{ value, label, couleur? }]   valeur : texte (radio) ou tableau de textes (cases cochées)
+const { legende, name, type = "radio", options, valeur } = Astro.props;
+const coche = (v) => (Array.isArray(valeur) ? valeur.includes(v) : valeur === v);
+---
+<fieldset class="m-0 border-0 p-0">
+  <legend class="mb-2 p-0 text-sm font-bold">{legende}</legend>
+  <div class="flex flex-wrap gap-2">
+    {options.map((o) => (
+      <label class="cursor-pointer">
+        <input type={type} name={name} value={o.value} checked={coche(o.value)} class="peer sr-only" />
+        <span class="inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm transition duration-200 hover:-translate-y-0.5 hover:shadow peer-checked:border-accent peer-checked:bg-accent peer-checked:text-paper peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent">
+          {o.couleur && <span class="h-3 w-3 rounded-full ring-2 ring-white" style={`background:${o.couleur}`} aria-hidden="true" />}
+          {o.label}
+        </span>
+      </label>
+    ))}
+  </div>
+</fieldset>

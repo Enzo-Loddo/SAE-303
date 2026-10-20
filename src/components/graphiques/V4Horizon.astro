@@ -1,0 +1,58 @@
+---
+import Cadre from "../Cadre.astro";
+import Choix from "../Choix.astro";
+const options = [
+  { value: "2030", label: "2030" },
+  { value: "2050", label: "2050" },
+  { value: "2100", label: "2100" },
+];
+---
+<Cadre
+  id="v4"
+  titre="En 2050, il fera en moyenne +1,1 à +1,2 °C de plus qu'en 1991-2020"
+  sousTitre="Température moyenne annuelle aujourd'hui (2026, estimée) et projetée à l'horizon choisi, par territoire"
+  description="Choisir un horizon avec les boutons. Pour chaque territoire, la flèche pointillée va de la température d'aujourd'hui (cercle vide) à la projection (point rouge). La légende ci-dessous explique les trois symboles et la marge d'incertitude."
+  alt="Pour chaque territoire, la température moyenne d'aujourd'hui et la projection. Aujourd'hui (2026, estimé) : environ 26,8 °C en Martinique, 20,3 °C à La Réunion, 23,0 °C en Nouvelle-Calédonie. En 2050, la projection médiane est d'environ 27,2 °C, 21,0 °C et 23,5 °C, soit +1,1 à +1,2 °C par rapport à 1991-2020. En 2100 : environ 28,0 °C, 21,9 °C et 24,5 °C (+1,8 à +2,1 °C). En 2030, la projection de la Martinique (+0,57 °C) est sous la valeur d'aujourd'hui (+0,67 °C), car ses stations se réchauffent déjà plus vite que la moyenne des modèles."
+  source="Météo-France, projections Socle Outre-Mer 2025 (niveaux de réchauffement TRACC) et séries homogénéisées"
+>
+  <div slot="controles">
+    <Choix legende="Horizon (niveau de réchauffement TRACC)" name="v4-horizon" options={options} valeur="2050" />
+  </div>
+  <div slot="legende" class="space-y-1 text-sm leading-relaxed text-ink/90">
+    <div><span class="mr-1 inline-block h-3 w-3 rounded-full border-2 border-ink align-middle"></span> <b>Aujourd'hui (2026)</b> : température moyenne de l'année estimée en prolongeant la tendance mesurée par les stations depuis 1970.</div>
+    <div><span class="mr-1 inline-block h-3.5 w-3.5 rounded-full align-middle" style="background:#d6604d"></span> <b data-legende-horizon>En 2050</b> : valeur centrale des projections (la moitié des simulations donne plus, l'autre moitié moins).</div>
+    <div><span class="mr-1 inline-block h-3 w-8 align-middle opacity-30" style="background:#d6604d"></span> <b>La marge</b> autour du point rouge : 90 % des simulations des modèles climatiques donnent une valeur dans cette bande (du 5<sup>e</sup> au 95<sup>e</sup> centile). Plus elle est large, plus l'avenir est incertain.</div>
+  </div>
+  <div data-note aria-live="polite"></div>
+  <p class="mt-3 text-xs text-ink/70">Températures : moyenne annuelle sur tout le territoire. Écarts mesurés par rapport à la moyenne 1991-2020. Les horizons 2030, 2050 et 2100 correspondent aux trois niveaux de réchauffement mondial (+1,5, +2, +3 °C) des projections ; ce sont des paliers, pas des années exactes.</p>
+</Cadre>
+
+<script>
+  import tm from "../../data/anomalies-temperature.json";
+  import projections from "../../data/projections-tmm.json";
+  import { graphiquePrevisions } from "../../lib/graphiques.js";
+  import { auVisible, largeurDe, surLargeur, afficher } from "../../lib/monter.js";
+
+  const fig = document.getElementById("v4");
+  const zone = fig.querySelector("[data-zone]");
+  const titreEl = fig.querySelector("[data-titre]");
+  const noteEl = fig.querySelector("[data-note]");
+  const legendeHorizon = fig.querySelector("[data-legende-horizon]");
+
+  function dessiner() {
+    const horizon = fig.querySelector('input[name="v4-horizon"]:checked').value;
+    const r = graphiquePrevisions(projections, tm, { width: largeurDe(zone, 520), horizon });
+    afficher(zone, r.plot);
+    titreEl.textContent = `En ${horizon}, il fera en moyenne ${r.titreEcart} de plus qu'en 1991-2020`;
+    legendeHorizon.textContent = `En ${horizon}`;
+    noteEl.innerHTML = r.enAvance.length
+      ? `<p class="mt-4 border-l-4 bg-orange-50 px-3 py-2 text-sm" style="border-color:#d6604d"><b>À noter :</b> en ${r.enAvance.join(" et ")}, le point « En ${horizon} » est à gauche du point « Aujourd'hui ». Ce n'est pas une erreur : les stations météo y mesurent déjà un réchauffement plus rapide que la moyenne des modèles climatiques sur tout le territoire. La valeur d'aujourd'hui dépasse donc la projection médiane, tout en restant dans la marge des simulations ou très près.</p>`
+      : "";
+  }
+
+  auVisible(zone, () => {
+    dessiner();
+    fig.addEventListener("input", dessiner);
+    surLargeur(zone, dessiner);
+  });
+</script>

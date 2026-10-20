@@ -1,0 +1,28 @@
+---
+// Cadre accessible commun à tous les graphiques du site :
+// <figure> + titre + sous-titre + description + (contrôles) + zone du graphique + <figcaption>.
+// Les scripts des graphiques retrouvent leur zone avec  figure#id [data-zone].
+const { id, titre, sousTitre, description, alt, source } = Astro.props;
+---
+<figure id={id} class="reveal my-8 rounded-lg border border-line bg-white p-4 shadow-sm sm:p-6" aria-labelledby={`${id}-titre`}>
+  <header class="max-w-3xl">
+    <h2 id={`${id}-titre`} data-titre class="font-serif text-2xl font-bold leading-snug">{titre}</h2>
+    <p data-sous-titre class="mt-1 italic text-ink/75">{sousTitre}</p>
+    <div data-description class="mt-3 text-sm leading-relaxed text-ink/90" set:html={description} />
+  </header>
+
+  <div class="mt-5"><slot name="controles" /></div>
+  <div class="mt-4"><slot name="legende" /></div>
+
+  <div data-zone class="mt-3 min-h-64 overflow-x-auto" role="group" aria-label={alt}>
+    <p data-chargement class="animate-pulse text-sm text-ink/60">Chargement du graphique…</p>
+    <noscript><p>Ce graphique demande JavaScript. En voici la lecture : {alt}</p></noscript>
+  </div>
+
+  <slot />
+
+  <figcaption class="mt-5 border-t border-line pt-3 text-sm">
+    <p><strong>Lecture du graphique :</strong> {alt}</p>
+    <p class="mt-1 text-ink/70">Source : {source}</p>
+  </figcaption>
+</figure>

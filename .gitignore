@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Local Netlify folder
 .netlify
+
+# données lourdes (sources du script de préparation, pas dans le dépôt)
+data-source/

@@ -1,0 +1,68 @@
+---
+import Cadre from "../Cadre.astro";
+---
+<Cadre
+  id="v2"
+  titre="Le réchauffement n'est pas le même partout dans un territoire"
+  sousTitre="Tendance de la température moyenne de chaque station, en °C par décennie (depuis 1970 ou le début de ses mesures)"
+  description="Chaque rond est une station météo. Plus il est <b>rouge foncé</b>, plus la station se réchauffe vite. <b>Survole</b> un rond pour lire sa valeur, <b>clique</b> pour voir son altitude et sa période de mesure. Les cartes se déplacent et se zooment."
+  alt="Trois cartes, une par territoire, avec les stations colorées selon leur tendance en °C par décennie. Toutes les stations se réchauffent (valeurs positives). Les écarts à l'intérieur d'un territoire existent mais restent modestes comparés aux écarts entre territoires ; la lecture station par station se fait en survolant ou en cliquant sur les ronds."
+  source="Météo-France, séries longues homogénéisées (TN et TX) · fond de carte © OpenTopoMap (CC-BY-SA), données © OpenStreetMap et SRTM"
+>
+  <div slot="legende" data-echelle class="text-sm"></div>
+  <div data-cartes class="mt-4 grid gap-4 lg:grid-cols-3"></div>
+</Cadre>
+
+<script>
+  import L from "leaflet";
+  import "leaflet/dist/leaflet.css";
+  import * as d3 from "d3";
+  import stations from "../../data/tendances-stations.json";
+  import { auVisible } from "../../lib/monter.js";
+
+  const fig = document.getElementById("v2");
+  const zone = fig.querySelector("[data-zone]");
+  const grille = fig.querySelector("[data-cartes]");
+  const echelleEl = fig.querySelector("[data-echelle]");
+  const f = (x) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(2).replace(".", ",");
+
+  auVisible(zone, () => {
+    zone.hidden = true;
+    const max = d3.max(stations, (d) => d.tendance);
+    const couleur = d3.scaleSequential([0, max], d3.interpolateOrRd);
+    echelleEl.innerHTML = `<div class="flex max-w-md items-center gap-3"><span>0</span><span class="h-3 flex-1 rounded" style="background:linear-gradient(90deg,${d3.interpolateOrRd(0)},${d3.interpolateOrRd(0.5)},${d3.interpolateOrRd(1)})"></span><span>${f(max)} °C/déc.</span></div>`;
+
+    const noms = [...new Set(stations.map((d) => d.territoire))];
+    noms.forEach((nom, i) => {
+      const liste = stations.filter((d) => d.territoire === nom);
+      const bloc = document.createElement("div");
+      bloc.className = "reveal rounded-lg border border-line bg-paper p-2";
+      bloc.style.setProperty("--d", `${i * 150}ms`);
+      const mn = d3.min(liste, (d) => d.tendance), mx = d3.max(liste, (d) => d.tendance);
+      bloc.innerHTML = `<h3 class="px-2 py-1 font-bold">${nom} <span class="text-sm font-normal text-ink/70">· ${liste.length} stations · de ${f(mn)} à ${f(mx)} °C/déc.</span></h3>`;
+      const carte = document.createElement("div");
+      carte.className = "h-80 rounded";
+      carte.setAttribute("role", "region");
+      carte.setAttribute("aria-label", `Carte de ${nom} : ${liste.length} stations météo`);
+      bloc.append(carte);
+      grille.append(bloc);
+      requestAnimationFrame(() => bloc.classList.add("visible"));
+
+      const m = L.map(carte, { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", { maxZoom: 15, attribution: "© OpenTopoMap (CC-BY-SA), données © OpenStreetMap et SRTM" }).addTo(m);
+      const points = liste.map((d, k) => {
+        const c = L.circleMarker([d.latitude, d.longitude], { radius: 0, color: "#333", weight: 1, fillColor: couleur(d.tendance), fillOpacity: 0.9 }).addTo(m);
+        c.bindTooltip(`${d.nom} : ${f(d.tendance)} °C/déc.`);
+        c.bindPopup(`<b>${d.nom}</b><br>${f(d.tendance)} °C par décennie<br>Altitude : ${d.altitude_m} m<br>Mesures : ${d.debut}-${d.fin} (${d.nbAnnees} ans)`);
+        // les ronds « poussent » l'un après l'autre
+        setTimeout(() => c.setRadius(9), 150 + k * 40);
+        return c;
+      });
+      m.fitBounds(L.featureGroup(points).getBounds().pad(0.2));
+    });
+  });
+</script>
+
+<style is:global>
+  .leaflet-interactive { transition: all 0.4s ease; }
+</style>
