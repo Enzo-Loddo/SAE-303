@@ -3,12 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import Parcours from "../components/Parcours.astro";
 import { SITE, QUESTIONS } from "../config/site.js";
 
-// Une réponse chiffrée par question (chiffres issus des graphiques de chaque page)
 const reponses = [
   { chiffre: "10 sur 10", texte: "Oui, presque toutes. Les dix années les plus chaudes de chaque territoire sont toutes récentes : 1998 ou après en Martinique (record en 2024, +1,47 °C), 2010 ou après à La Réunion (record en 2019, +0,91 °C), 1988 ou après en Nouvelle-Calédonie (record en 2022, +1,27 °C)." },
-  { chiffre: "+0,15 à +0,34 °C", texte: "Toutes les stations se réchauffent, mais pas au même rythme : de +0,29 à +0,34 °C par décennie en Martinique, +0,15 à +0,22 à La Réunion et +0,20 à +0,31 en Nouvelle-Calédonie. L'écart entre territoires est plus net que l'écart entre stations d'un même territoire, mais une île ne se résume pas à une seule valeur." },
+  { chiffre: "+0,15 à +0,34 °C", texte: "Toutes les stations se réchauffent, mais pas au même rythme : de +0,29 à +0,34 °C par décennie en Martinique, +0,15 à +0,22 à La Réunion et +0,20 à +0,31 en Nouvelle-Calédonie. En Nouvelle-Calédonie, l'écart entre stations (jusqu'à 0,11 °C par décennie) est aussi grand que celui entre la Martinique et La Réunion : une île ne se résume pas à une seule valeur." },
   { chiffre: "+0,31 °C / décennie", texte: "La Martinique se réchauffe le plus vite depuis 1970, soit environ +1,7 °C en 55 ans, devant la Nouvelle-Calédonie (+0,23 °C par décennie) et La Réunion (+0,19 °C)." },
-  { chiffre: "+1,1 à +1,2 °C", texte: "En 2050, la température moyenne dépasserait celle de 1991-2020 de 1,1 à 1,2 °C selon le territoire, et de 1,8 à 2,1 °C en 2100. Ces valeurs sont des paliers de réchauffement, pas des années exactes, avec une marge d'incertitude entre modèles." },
+  { chiffre: "+1,1 à +1,2 °C", texte: "En 2050, la température moyenne dépasserait celle de 1991-2020 de 1,1 à 1,2 °C selon le territoire (La Réunion en tête), et de 1,8 à 2,1 °C en 2100. Ces valeurs sont des paliers de réchauffement, pas des années exactes, avec une marge d'incertitude entre modèles." },
   { chiffre: "r = 0,05 à 0,34", texte: "Non, pas nettement. Les années plus chaudes ne sont pas systématiquement plus (ou moins) arrosées : le lien est quasi nul à La Réunion (0,05), faible en Martinique (0,13) et modéré en Nouvelle-Calédonie (0,34)." },
 ];
 ---
@@ -42,7 +41,7 @@ const reponses = [
     </ol>
   </section>
 
-  <section aria-labelledby="t-synthese" class="mt-16 max-w-3xl">
+  <section aria-labelledby="t-synthese" class="mx-auto mt-16 max-w-3xl">
     <h2 id="t-synthese" class="text-2xl font-bold sm:text-3xl">Ce qu'on en retient</h2>
     <p class="mt-4 leading-relaxed">
       Parler de « réchauffement » en général cache des écarts. La <strong>Martinique</strong> se réchauffe le plus
@@ -61,7 +60,7 @@ const reponses = [
     </p>
   </section>
 
-  <section aria-labelledby="t-limites" class="mt-16 max-w-3xl rounded-xl border border-line bg-white p-6">
+  <section aria-labelledby="t-limites" class="mx-auto mt-16 max-w-3xl rounded-xl border border-line bg-white p-6">
     <h2 id="t-limites" class="text-2xl font-bold">Ce qu'il faut garder en tête</h2>
     <ul class="mt-4 list-disc space-y-2 pl-6 leading-relaxed">
       <li>Le nombre de stations varie : 3 en Martinique, 4 à La Réunion, 15 en Nouvelle-Calédonie. Les moyennes d'un territoire reposent sur peu de mesures.</li>

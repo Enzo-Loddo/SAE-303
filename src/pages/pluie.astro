@@ -1,8 +1,13 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
 import V5PluieChaleur from "../components/graphiques/V5PluieChaleur.astro";
+import Reponse from "../components/Reponse.astro";
 ---
 <QuestionPage slug="pluie">
   <V5PluieChaleur />
-  <p class="rounded border border-dashed border-line bg-white p-4"><em>[À COMPLÉTER : réponse à la question en 2 ou 3 phrases.]</em></p>
+  <Reponse verdict="Non : la pluie ne suit pas la chaleur, ou très peu." chiffre="Corrélation entre écart de chaleur et écart de pluie : 0,05 à La Réunion, 0,13 en Martinique, 0,34 en Nouvelle-Calédonie.">
+<p>Dans les trois territoires, la courbe de chaleur monte régulièrement de 1970 à 2024 (jusqu'à environ +1,7 écart-type en Martinique), alors que la courbe de pluie oscille autour de zéro, entre environ −0,9 et +0,7, sans tendance nette. Une année plus chaude n'est donc pas, en général, une année plus sèche ni plus humide.</p>
+<p>Seule la <strong>Nouvelle-Calédonie</strong> montre un lien modéré (0,34) : les années 2020, plus humides, coïncident avec la fin de la hausse des températures. Cette coïncidence n'établit pas que l'une explique l'autre.</p>
+    <Fragment slot="limite">Un lien statistique faible entre deux moyennes annuelles ne prouve pas l'absence de lien : il peut exister sur des échelles de temps plus courtes ou à l'échelle d'une saison. La pluie varie fortement d'une année à l'autre, ce qui rend toute tendance difficile à repérer.</Fragment>
+  </Reponse>
 </QuestionPage>

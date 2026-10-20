@@ -1,8 +1,13 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
 import V4Horizon from "../components/graphiques/V4Horizon.astro";
+import Reponse from "../components/Reponse.astro";
 ---
 <QuestionPage slug="futur">
   <V4Horizon />
-  <p class="rounded border border-dashed border-line bg-white p-4"><em>[À COMPLÉTER : réponse à la question en 2 ou 3 phrases.]</em></p>
+  <Reponse verdict="En 2050, il fera environ 1,1 à 1,2 °C de plus qu'en 1991-2020." chiffre="La Réunion est la plus concernée en 2050 (+1,20 °C), devant la Nouvelle-Calédonie (+1,09 °C) et la Martinique (+1,07 °C).">
+<p>Les projections de Météo-France donnent, pour 2050, un écart médian de <strong>+1,07 °C en Martinique</strong>, <strong>+1,20 °C à La Réunion</strong> et <strong>+1,09 °C en Nouvelle-Calédonie</strong>. En 2100, l'écart serait de +1,84, +2,09 et +2,05 °C. Par rapport à la température estimée aujourd'hui, il reste donc environ 0,4 à 0,7 °C de réchauffement à venir d'ici 2050.</p>
+<p>Le classement s'inverse presque : le territoire qui se réchauffe le plus vite depuis 1970 (la Martinique) a le plus petit écart projeté, et la plus lente jusqu'ici (La Réunion) le plus grand. Les marges d'incertitude se recouvrent toutefois en partie (Martinique 0,99 à 1,21 ; La Réunion 1,14 à 1,27 °C en 2050) : il faut lire cela comme un ordre de grandeur et non comme un classement ferme.</p>
+    <Fragment slot="limite">Ces projections sont publiées par Météo-France, nous ne les prolongeons pas nous-mêmes. Elles décrivent des paliers de réchauffement (+1,5, +2, +3 °C dans le monde) que nous associons à 2030, 2050 et 2100 : ce sont des repères, pas des dates exactes. Passé mesuré et futur projeté n'ont pas la même nature.</Fragment>
+  </Reponse>
 </QuestionPage>

@@ -1,18 +1,17 @@
 @import "tailwindcss";
 
-/* ── IDENTITÉ : palette de CHARTE (interface, textes, fonds) ──
-   Distincte de la palette des DONNÉES ci-dessous. */
 @theme {
-  --color-ink: #1f2a37;
-  --color-paper: #f6f3ee;
-  --color-accent: #4a3f6b;
-  --color-line: #d9d3c7;
+  --color-ink: #2b1d16;
+  --color-paper: #fbf5ea;
+  --color-accent: #a4301f;
+  --color-line: #e8d9bd;
+  --color-sun: #e8a33d;
+  --color-sable: #f3e6cb;
+  --color-lagon: #0f5f66;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
 }
 
-/* ── PALETTE DES DONNÉES (Okabe-Ito, lisible en daltonisme) ──
-   Ne jamais l'utiliser pour l'interface. */
 :root {
   --d-martinique: #0072b2;
   --d-reunion: #d55e00;
@@ -20,20 +19,15 @@
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
-body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); line-height: 1.65; }
+body { background: radial-gradient(ellipse 80% 40% at 50% 0%, #fde7bd 0%, transparent 70%) no-repeat, var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); line-height: 1.65; }
 h1, h2, h3 { font-family: var(--font-serif); line-height: 1.2; }
 
-/* Accessibilité : focus visible partout, mouvement réduit respecté */
 :focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { animation: none !important; transition: none !important; }
 }
 
-/* ── ANIMATIONS ──────────────────────────────────────────────
-   Les états « cachés » n'existent que si la classe .js est posée
-   (voir Layout.astro) : sans JavaScript ou avec « mouvement réduit »,
-   tout reste visible. */
 @keyframes rise  { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes wipe  { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
@@ -45,16 +39,11 @@ h1, h2, h3 { font-family: var(--font-serif); line-height: 1.2; }
   transition-delay: var(--d, 0ms); }
 .js .reveal.visible { opacity: 1; transform: none; }
 
-/* Silhouettes : le contour se dessine de gauche à droite, avec un décalage par territoire */
 .js .silhouette { clip-path: inset(0 100% 0 0); }
 .js .visible .silhouette { animation: wipe 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: calc(var(--d, 0ms) + 250ms); }
 
-/* Menu déroulant : apparition douce */
 details[open] > ul { animation: rise 0.2s ease both; }
 
-/* ── GRAPHIQUES ─────────────────────────────────────────────
-   Les courbes se tracent, les points apparaissent l'un après l'autre
-   (classes posées par animer() dans src/lib/graphiques.js, seulement si .js). */
 @keyframes trace { to { stroke-dashoffset: 0; } }
 @keyframes pop   { from { opacity: 0; } to { opacity: 1; } }
 .js figure:not([data-joue]) .trace { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trace 2s cubic-bezier(0.45, 0, 0.2, 1) forwards; }
@@ -65,3 +54,6 @@ input[type="range"] { cursor: pointer; }
 .leaflet-container { isolation: isolate; }
 .menu-liste { animation: rise 0.2s ease both; }
 .defile { }
+
+.infobulle { opacity: 0; transform: translateY(10px) scale(0.97); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.carte-territoire:hover .infobulle, .carte-territoire:focus-within .infobulle, .carte-territoire:focus .infobulle { opacity: 1; transform: none; }

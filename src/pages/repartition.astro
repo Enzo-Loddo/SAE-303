@@ -1,8 +1,13 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
 import V1Distribution from "../components/graphiques/V1Distribution.astro";
+import Reponse from "../components/Reponse.astro";
 ---
 <QuestionPage slug="repartition">
   <V1Distribution />
-  <p class="rounded border border-dashed border-line bg-white p-4"><em>[À COMPLÉTER : réponse à la question en 2 ou 3 phrases.]</em></p>
+  <Reponse verdict="Oui : presque toutes les années les plus chaudes sont récentes." chiffre="Les 10 années les plus chaudes de chaque territoire datent toutes de 1998 ou après (Martinique), 2010 ou après (La Réunion), 1988 ou après (Nouvelle-Calédonie).">
+<p>Sur la période 1970-2024, la tendance saute aux yeux : à gauche, les points clairs des années 1970 et 1980 sont jusqu'à 1,2 °C sous la moyenne 1991-2020 ; à droite, les points foncés des années 2010 et 2020 sont au-dessus. Les records sont récents : <strong>2024 en Martinique (+1,47 °C)</strong>, <strong>2019 à La Réunion (+0,91 °C)</strong> et <strong>2022 en Nouvelle-Calédonie (+1,27 °C)</strong>.</p>
+<p>Le « presque » compte : la règle n'est pas la même partout. À La Réunion, les dix années les plus chaudes sont toutes très récentes (depuis 2010) ; en Martinique et surtout en Nouvelle-Calédonie, elles s'étalent sur une période plus longue, ce qui veut dire que des années chaudes existaient déjà plus tôt.</p>
+    <Fragment slot="limite">Ces écarts sont calculés sur la moyenne des stations de chaque territoire (3 en Martinique, 4 à La Réunion, 15 en Nouvelle-Calédonie) et sur une référence 1991-2020. Ils décrivent ce qui est mesuré, pas ses causes.</Fragment>
+  </Reponse>
 </QuestionPage>

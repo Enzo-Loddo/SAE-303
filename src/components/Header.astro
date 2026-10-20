@@ -1,14 +1,29 @@
 ---
-import { SITE, MENU, QUESTIONS } from "../config/site.js";
+import { SITE, MENU, QUESTIONS, TERRITOIRES } from "../config/site.js";
 const actuel = Astro.url.pathname.replace(/\/$/, "") || "/";
 const dansQuestions = QUESTIONS.some((q) => actuel === `/${q.slug}`);
 const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-paper aria-[current=page]:bg-accent aria-[current=page]:text-paper";
 ---
-<header id="entete" class="sticky top-0 z-50 border-b border-line bg-white/85 backdrop-blur transition-shadow duration-300 [&.defile]:shadow-md">
+<header id="entete" class="sticky top-0 z-50 border-b border-line bg-white/90 backdrop-blur transition-shadow duration-300 [&.defile]:shadow-md">
+  <div class="bg-ink text-paper">
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-1.5 text-xs">
+      <p class="hidden sm:block"><span aria-hidden="true">☀</span> Enquête Météo-France · 1970-2024 · Outre-mer</p>
+      <ul class="flex flex-wrap items-center gap-x-5 gap-y-1" aria-label="Heure actuelle dans chaque territoire">
+        {TERRITOIRES.map((t) => (
+          <li class="flex items-center gap-1.5">
+            <span class="h-2 w-2 rounded-full" style={`background:${t.couleur}`} aria-hidden="true"></span>
+            <span>{t.nom.replace("La Nouvelle-Calédonie", "Nouvelle-Calédonie").replace("La ", "")}</span>
+            <strong data-heure={t.fuseau} class="font-bold tabular-nums">--:--</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="h-0.5 bg-gradient-to-r from-sun via-accent to-lagon" aria-hidden="true"></div>
+  </div>
   <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
     <a href="/" class="group flex items-center gap-3 font-serif text-xl font-bold text-accent">
       <img src="/logo.svg" width="36" height="36" alt="" class="transition-transform duration-500 group-hover:rotate-[360deg]" />
-      <span>{SITE.nom}</span>
+      <span class="leading-tight">{SITE.nom}<span class="block font-sans text-xs font-normal text-ink/80">Le climat des DOM-TOM, mesures à l’appui</span></span>
     </a>
     <nav aria-label="Navigation principale">
       <ul class="flex flex-wrap items-center gap-1">
@@ -26,7 +41,7 @@ const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover
                   <span aria-hidden="true" class="text-xs transition-transform group-open/menu:rotate-180">▾</span>
                 </summary>
                 <div class="menu-liste absolute left-0 z-40 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-line bg-white p-2 shadow-xl sm:left-auto sm:right-0">
-                  <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wide text-ink/60">Parcours de lecture</p>
+                  <p class="px-3 pb-1 pt-2 text-xs font-bold uppercase tracking-wide text-ink/80">Parcours de lecture</p>
                   <ol>
                     {QUESTIONS.map((q, i) => (
                       <li>
@@ -60,6 +75,18 @@ const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover
 </header>
 
 <script>
+  const heures = document.querySelectorAll<HTMLElement>("[data-heure]");
+  const formats = new Map<string, Intl.DateTimeFormat>();
+  const afficherHeures = () => {
+    const maintenant = new Date();
+    heures.forEach((el) => {
+      const tz = el.dataset.heure!;
+      if (!formats.has(tz)) formats.set(tz, new Intl.DateTimeFormat("fr-FR", { timeZone: tz, hour: "2-digit", minute: "2-digit" }));
+      el.textContent = formats.get(tz)!.format(maintenant);
+    });
+  };
+  afficherHeures();
+  setInterval(afficherHeures, 15000);
   const menu = document.getElementById("menu-questions") as HTMLDetailsElement | null;
   if (menu) {
     document.addEventListener("keydown", (e) => {
@@ -67,7 +94,6 @@ const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover
     });
     document.addEventListener("click", (e) => { if (menu.open && !menu.contains(e.target as Node)) menu.open = false; });
   }
-  // Barre de progression de lecture + ombre de l'en-tête au défilement
   const entete = document.getElementById("entete")!;
   const barre = document.getElementById("progression")!;
   let attente = false;

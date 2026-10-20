@@ -16,7 +16,7 @@ const titreComplet = title ? `${title} · ${SITE.nom}` : SITE.nom;
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{titreComplet}</title>
-    <!-- Animations activées seulement si le visiteur ne demande pas de mouvement réduit -->
+
     <script is:inline>
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("js");
     </script>
@@ -33,12 +33,9 @@ const titreComplet = title ? `${title} · ${SITE.nom}` : SITE.nom;
     <Footer />
     <button id="remonter" type="button" class="fixed bottom-5 right-5 z-40 grid h-11 w-11 translate-y-4 place-items-center rounded-full bg-accent text-xl text-paper opacity-0 shadow-lg transition duration-300 pointer-events-none [&.visible]:pointer-events-auto [&.visible]:translate-y-0 [&.visible]:opacity-100" aria-label="Remonter en haut de la page">↑</button>
     <script>
-      // Apparition progressive : chaque section (ou élément .reveal) s'anime quand il entre à l'écran.
-      // Bouton « remonter » : apparaît après un peu de défilement
       const bouton = document.getElementById("remonter")!;
       addEventListener("scroll", () => bouton.classList.toggle("visible", scrollY > 600), { passive: true });
       bouton.addEventListener("click", () => scrollTo({ top: 0 }));
-      // Apparition échelonnée des éléments d'une même rangée
       document.querySelectorAll("ul.grid, ol.grid").forEach((l) => [...l.children].forEach((c, i) => (c as HTMLElement).style.setProperty("--d", `${i * 120}ms`)));
 
       const cibles = document.querySelectorAll<HTMLElement>("main section, .reveal");

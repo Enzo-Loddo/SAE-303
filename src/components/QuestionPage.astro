@@ -1,7 +1,4 @@
 ---
-// Gabarit des 5 pages de questions : titre, graphique(s), réponse, précédent/suivant.
-// Usage dans src/pages/xxx.astro :
-//   <QuestionPage slug="evolution">  ...contenu : <Figure/> + texte...  </QuestionPage>
 import Layout from "../layouts/Layout.astro";
 import { QUESTIONS } from "../config/site.js";
 import Parcours from "./Parcours.astro";
@@ -13,7 +10,7 @@ const apres = QUESTIONS[i + 1];
 ---
 <Layout title={q.question} description={q.question}>
   <div class="mx-auto max-w-2xl"><Parcours /></div>
-  <p class="hero-in mt-12 text-sm font-bold uppercase tracking-widest text-accent">Question {i + 1} sur {QUESTIONS.length}</p>
+  <p class="hero-in mt-12 text-sm font-bold uppercase tracking-widest text-accent">{q.temps} · Question {i + 1} sur {QUESTIONS.length}</p>
   <h1 class="hero-in mt-3 max-w-3xl text-3xl font-bold leading-tight sm:text-5xl">{q.question}</h1>
 
   <div class="mt-6">
