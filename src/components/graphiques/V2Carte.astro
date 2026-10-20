@@ -1,17 +1,49 @@
 ---
 import Cadre from "../Cadre.astro";
+import stations from "../../data/tendances-stations.json";
+// Liste lisible au clavier et sans carte : mêmes données que les ronds, rangées par territoire puis par tendance
+const ordre = ["Martinique", "La Réunion", "Nouvelle-Calédonie"];
+const liste = [...stations].sort((a, b) => ordre.indexOf(a.territoire) - ordre.indexOf(b.territoire) || b.tendance - a.tendance);
+const f = (x) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(2).replace(".", ",");
 ---
 <Cadre
-  guide={[{"t": "Ce qu'on regarde", "d": "Chaque <b>rond</b> est une station météo, placée là où elle mesure. Sa couleur indique la vitesse de réchauffement en °C par décennie."}, {"t": "Comment le lire", "d": "Plus le rond est <b>rouge foncé</b>, plus la station se réchauffe vite. Survoler un rond donne sa valeur, cliquer affiche altitude et période de mesure."}, {"t": "Ce qu'il faut retenir", "d": "Toutes les stations se réchauffent, mais le rythme varie, surtout en <b>Nouvelle-Calédonie</b> où les 15 stations sont les plus écartées."}]}
   id="v2"
   titre="Le réchauffement n'est pas le même partout dans un territoire"
   sousTitre="Tendance de la température moyenne de chaque station, en °C par décennie (depuis 1970 ou le début de ses mesures)"
-  description="Chaque rond est une station météo. Plus il est <b>rouge foncé</b>, plus la station se réchauffe vite. <b>Survole</b> un rond pour lire sa valeur, <b>clique</b> pour voir son altitude et sa période de mesure. Les cartes se déplacent et se zooment."
-  alt="Trois cartes, une par territoire, avec les stations colorées selon leur tendance en °C par décennie. Toutes les stations se réchauffent (valeurs positives). Les écarts à l'intérieur d'un territoire vont jusqu'à 0,11 °C par décennie en Nouvelle-Calédonie (de +0,20 à +0,31), 0,07 à La Réunion (de +0,15 à +0,22) et 0,05 en Martinique (de +0,29 à +0,34). La lecture station par station se fait en survolant ou en cliquant sur les ronds."
+  description="Chaque rond est une station météo. Plus il est <b>rouge foncé</b>, plus la station se réchauffe vite. <b>Survole</b> un rond pour lire sa valeur, <b>clique</b> pour voir son altitude et sa période de mesure. Les cartes se déplacent et se zooment ; la liste sous les cartes donne toutes les valeurs."
+  alt="Trois cartes, une par territoire, avec les stations colorées selon leur tendance en °C par décennie. Toutes les stations se réchauffent (valeurs positives). Les écarts à l'intérieur d'un territoire vont jusqu'à 0,11 °C par décennie en Nouvelle-Calédonie (de +0,20 à +0,31), 0,07 à La Réunion (de +0,15 à +0,22) et 0,05 en Martinique (de +0,29 à +0,34). La lecture station par station se fait en survolant ou en cliquant sur les ronds, ou dans la liste des stations sous les cartes."
   source="Météo-France, séries longues homogénéisées (TN et TX) · fond de carte © OpenTopoMap (CC-BY-SA), données © OpenStreetMap et SRTM"
 >
   <div slot="legende" data-echelle class="text-sm"></div>
   <div data-cartes class="mt-4 grid gap-4 lg:grid-cols-3"></div>
+  <details class="mt-4 text-sm">
+    <summary class="cursor-pointer font-bold text-accent underline-offset-4 hover:underline">Liste des {liste.length} stations (sans carte)</summary>
+    <div class="mt-3 overflow-x-auto">
+      <table class="w-full min-w-[32rem] border-collapse bg-white text-left">
+        <caption class="sr-only">Tendance de chaque station météo, en °C par décennie</caption>
+        <thead class="bg-paper">
+          <tr>
+            <th scope="col" class="border border-line p-2">Territoire</th>
+            <th scope="col" class="border border-line p-2">Station</th>
+            <th scope="col" class="border border-line p-2">Tendance (°C par décennie)</th>
+            <th scope="col" class="border border-line p-2">Altitude</th>
+            <th scope="col" class="border border-line p-2">Mesures</th>
+          </tr>
+        </thead>
+        <tbody>
+          {liste.map((d) => (
+            <tr>
+              <td class="border border-line p-2">{d.territoire}</td>
+              <th scope="row" class="border border-line p-2 font-normal">{d.nom}</th>
+              <td class="border border-line p-2 tabular-nums">{f(d.tendance)}</td>
+              <td class="border border-line p-2 tabular-nums">{d.altitude_m} m</td>
+              <td class="border border-line p-2 tabular-nums">{d.debut}-{d.fin}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
 </Cadre>
 
 <script>

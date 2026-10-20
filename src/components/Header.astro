@@ -4,7 +4,7 @@ const actuel = Astro.url.pathname.replace(/\/$/, "") || "/";
 const dansQuestions = QUESTIONS.some((q) => actuel === `/${q.slug}`);
 const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-paper aria-[current=page]:bg-accent aria-[current=page]:text-paper";
 ---
-<header id="entete" class="sticky top-0 z-50 border-b border-line bg-white/90 backdrop-blur transition-shadow duration-300 [&.defile]:shadow-md">
+<header id="entete" class="relative z-50 sm:sticky sm:top-0 border-b border-line bg-white/90 backdrop-blur transition-shadow duration-300 [&.defile]:shadow-md">
   <div class="bg-ink text-paper">
     <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-1.5 text-xs">
       <p class="hidden sm:block"><span aria-hidden="true">☀</span> Enquête Météo-France · 1970-2024 · Outre-mer</p>
@@ -23,7 +23,7 @@ const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover
   <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3">
     <a href="/" class="group flex items-center gap-3 font-serif text-xl font-bold text-accent">
       <img src="/logo.svg" width="36" height="36" alt="" class="transition-transform duration-500 group-hover:rotate-[360deg]" />
-      <span class="leading-tight">{SITE.nom}<span class="block font-sans text-xs font-normal text-ink/80">Le climat des DOM-TOM, mesures à l’appui</span></span>
+      <span class="leading-tight">{SITE.nom}<span class="block font-sans text-xs font-normal text-ink/80">Le climat de trois territoires d’Outre-mer, mesures à l’appui</span></span>
     </a>
     <nav aria-label="Navigation principale">
       <ul class="flex flex-wrap items-center gap-1">

@@ -6,12 +6,12 @@ import { SITE, QUESTIONS } from "../config/site.js";
 const reponses = [
   { chiffre: "10 sur 10", texte: "Oui, presque toutes. Les dix années les plus chaudes de chaque territoire sont toutes récentes : 1998 ou après en Martinique (record en 2024, +1,47 °C), 2010 ou après à La Réunion (record en 2019, +0,91 °C), 1988 ou après en Nouvelle-Calédonie (record en 2022, +1,27 °C)." },
   { chiffre: "+0,15 à +0,34 °C", texte: "Toutes les stations se réchauffent, mais pas au même rythme : de +0,29 à +0,34 °C par décennie en Martinique, +0,15 à +0,22 à La Réunion et +0,20 à +0,31 en Nouvelle-Calédonie. En Nouvelle-Calédonie, l'écart entre stations (jusqu'à 0,11 °C par décennie) est aussi grand que celui entre la Martinique et La Réunion : une île ne se résume pas à une seule valeur." },
-  { chiffre: "+0,31 °C / décennie", texte: "La Martinique se réchauffe le plus vite depuis 1970, soit environ +1,7 °C en 55 ans, devant la Nouvelle-Calédonie (+0,23 °C par décennie) et La Réunion (+0,19 °C)." },
+  { chiffre: "+0,31 °C / décennie", texte: "La Martinique se réchauffe le plus vite depuis 1970, soit environ +1,7 °C entre 1970 et 2024, devant la Nouvelle-Calédonie (+0,23 °C par décennie) et La Réunion (+0,19 °C)." },
   { chiffre: "+1,1 à +1,2 °C", texte: "En 2050, la température moyenne dépasserait celle de 1991-2020 de 1,1 à 1,2 °C selon le territoire (La Réunion en tête), et de 1,8 à 2,1 °C en 2100. Ces valeurs sont des paliers de réchauffement, pas des années exactes, avec une marge d'incertitude entre modèles." },
-  { chiffre: "r = 0,05 à 0,34", texte: "Non, pas nettement. Les années plus chaudes ne sont pas systématiquement plus (ou moins) arrosées : le lien est quasi nul à La Réunion (0,05), faible en Martinique (0,13) et modéré en Nouvelle-Calédonie (0,34)." },
+  { chiffre: "r = 0,06 à 0,34", texte: "Non, pas nettement. Les années plus chaudes ne sont pas systématiquement plus (ou moins) arrosées : le lien est quasi nul à La Réunion (0,06), faible en Martinique (0,13) et modéré en Nouvelle-Calédonie (0,34)." },
 ];
 ---
-<Layout title="Conclusion" description="Ce que cette enquête apprend sur le changement climatique dans les DOM-TOM, et pourquoi cela compte.">
+<Layout title="Conclusion" description="Ce que cette enquête apprend sur le changement climatique en Martinique, à La Réunion et en Nouvelle-Calédonie, et pourquoi cela compte.">
   <div class="mx-auto max-w-2xl"><Parcours /></div>
 
   <header class="mt-12 max-w-3xl">
@@ -45,8 +45,8 @@ const reponses = [
     <h2 id="t-synthese" class="text-2xl font-bold sm:text-3xl">Ce qu'on en retient</h2>
     <p class="mt-4 leading-relaxed">
       Parler de « réchauffement » en général cache des écarts. La <strong>Martinique</strong> se réchauffe le plus
-      vite et bat des records récents ; <strong>La Réunion</strong> monte plus lentement mais sans pause ; la
-      <strong>Nouvelle-Calédonie</strong> avance par à-coups, avec un palier dans les années 2000 puis une reprise.
+      vite et bat des records récents ; <strong>La Réunion</strong> monte plus lentement mais sans pause ; la <strong>Nouvelle-Calédonie</strong>
+      avance par à-coups, avec un palier dans les années 2000 puis une reprise.
       Partout, les années les plus chaudes sont récentes et le réchauffement devrait se poursuivre : environ +1,1 à +1,2 °C
       en 2050 par rapport à 1991-2020.
     </p>
@@ -56,7 +56,11 @@ const reponses = [
       plutôt que de se fier à une moyenne mondiale.
     </p>
     <p class="mt-4 leading-relaxed">
-      <em>[À COMPLÉTER : pour votre public choisi, ce que cela change concrètement (décisions, vigilance, adaptation).]</em>
+      Pour qui suit le climat depuis l'Hexagone, la leçon est concrète : quand on parle du climat « en Outre-mer », il faut
+      préciser de quel territoire il s'agit. Depuis 1970, la Martinique a gagné environ 1,7 °C, la Nouvelle-Calédonie
+      environ 1,3 °C et La Réunion environ 1,0 °C. Et d'ici 2050, les projections ajoutent encore environ 0,4 à 0,7 °C à la
+      température d'aujourd'hui. Ces chiffres, mesurés station par station, aident à lire les informations sur ces territoires
+      avec un regard plus juste.
     </p>
   </section>
 
