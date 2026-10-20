@@ -1,0 +1,39 @@
+---
+// Enveloppe accessible d'un graphique INTERACTIF, dessiné dans le navigateur
+// (PlotFigure fait un rendu fixe côté serveur, donc sans filtres ni infobulles).
+// Même présentation que Figure.astro, avec l'en-tête du notebook (cellule enteteGraphique).
+// Usage :
+//   <GraphiqueClient id="v1" titre="…" sousTitre="…" alt="…" source="…">
+//     <p slot="description">…</p>
+//     <div slot="controles">…filtres, menu, boutons…</div>
+//     <div slot="avant">…légende placée avant le graphique…</div>
+//     …le reste (résumé, note) se place après le graphique
+//   </GraphiqueClient>
+// Le script de la page dessine dans <div id={id}> ; il peut mettre à jour
+// #{id}-titre, #{id}-sous-titre et #{id}-description quand le lecteur filtre.
+const { id, titre, sousTitre, alt, source } = Astro.props;
+---
+<figure class="my-8 rounded border border-line bg-white p-4" aria-labelledby={`${id}-titre`} aria-describedby={`${id}-alt`}>
+  <header class="max-w-3xl">
+    <h2 id={`${id}-titre`} class="text-xl font-bold sm:text-2xl" aria-live="polite">{titre}</h2>
+    <p id={`${id}-sous-titre`} class="mt-1 italic text-ink/80">{sousTitre}</p>
+    <div id={`${id}-description`} class="mt-2 text-sm text-ink/90"><slot name="description" /></div>
+  </header>
+
+  {Astro.slots.has("controles") && (
+    <div class="mt-4 flex flex-wrap items-end gap-x-8 gap-y-3 rounded border border-line bg-paper/60 p-3 text-sm">
+      <slot name="controles" />
+    </div>
+  )}
+
+  <slot name="avant" />
+  <div id={id} class="mt-4 min-w-0">
+    <noscript><p class="text-sm"><em>Ce graphique interactif a besoin de JavaScript. Son contenu est décrit ci-dessous.</em></p></noscript>
+  </div>
+  <slot />
+
+  <figcaption class="mt-4 text-sm">
+    <span id={`${id}-alt`} class="block">{alt}</span>
+    <span class="mt-1 block text-ink/70">Source : {source}</span>
+  </figcaption>
+</figure>

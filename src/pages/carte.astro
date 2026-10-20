@@ -1,10 +1,62 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
-// import Figure from "../components/Figure.astro";
-// import * as Plot from "@observablehq/plot";
+import GraphiqueClient from "../components/GraphiqueClient.astro";
+import stations from "../data/tendances-stations.json";
+import { ORDRE } from "../scripts/outils.js";
+
+const nb = (t: string) => stations.filter((d) => d.territoire === t && d.latitude != null).length;
 ---
 <QuestionPage slug="carte">
-  <p class="rounded border border-dashed border-line bg-white p-6">
-    <em>[À COMPLÉTER : graphique avec le composant Figure, puis la réponse en 2 ou 3 phrases.]</em>
-  </p>
+  <GraphiqueClient
+    id="v2"
+    titre="La Martinique se réchauffe vite partout, La Réunion plus lentement"
+    sousTitre="Tendance de chaque station météo depuis 1970, en °C par décennie, sur fond de relief"
+    alt="Trois cartes en relief. En Martinique, les 3 stations se réchauffent toutes vite, de +0,29 à +0,34 °C par décennie. À La Réunion, les 4 stations se réchauffent moins vite : de +0,15 °C par décennie sur la côte sud-ouest à +0,22 °C dans les hauts du sud (Le Tampon), le nord et l'est étant entre les deux (+0,19 à +0,21 °C). En Nouvelle-Calédonie, les 15 stations de la Grande Terre et des îles Loyauté vont de +0,20 à +0,31 °C par décennie, sans zone qui se détache nettement."
+    source="Météo-France, séries homogénéisées Outre-mer (TN et TX mensuelles) et métadonnées des stations, data.gouv.fr, données au 19/10/2026 · calculs SAE303 groupe 14 · fond de carte © OpenTopoMap (CC-BY-SA), données © OpenStreetMap et SRTM"
+  >
+    <p slot="description">
+      Chaque point est une station : plus il est <b>foncé</b>, plus elle s'est réchauffée. En Martinique, les 3 stations gagnent environ +0,3 °C
+      par décennie ; à La Réunion, de +0,15 à +0,22 °C ; en Nouvelle-Calédonie, de +0,20 à +0,31 °C, sans zone qui se détache. Le fond montre le
+      relief (montagnes en clair). Survoler un point donne sa valeur, cliquer donne aussi l'altitude de la station.
+    </p>
+
+    <!-- #v2 reçoit la légende de couleur ; les 3 cartes sont dessinées dans la grille ci-dessous -->
+    <div class="mt-2 grid gap-4 md:grid-cols-3">
+      {ORDRE.map((t, i) => (
+        <div>
+          <p class="font-serif font-bold">{t}</p>
+          <p class="text-xs text-ink/70">{nb(t)} stations</p>
+          <div id={`v2-carte-${i}`} class="relative z-0 mt-1 aspect-square w-full border border-line" role="region" aria-label={`Carte des stations de ${t}`}></div>
+        </div>
+      ))}
+    </div>
+  </GraphiqueClient>
+
+  <section aria-labelledby="v2-reponse" class="max-w-3xl">
+    <h2 id="v2-reponse" class="text-2xl font-bold">La réponse</h2>
+    <p class="mt-3">
+      Le réchauffement touche toutes les stations, mais pas au même rythme selon le territoire. La Martinique se réchauffe vite partout
+      (environ +0,3 °C par décennie sur ses 3 stations). À La Réunion, il est plus lent et varie selon les stations, de +0,15 à +0,22 °C.
+      En Nouvelle-Calédonie, aucune zone ne se détache nettement. Avec si peu de stations (3 en Martinique, 4 à La Réunion), la carte montre
+      des points de mesure, pas des zones entières.
+    </p>
+  </section>
 </QuestionPage>
+
+<script>
+  import "leaflet/dist/leaflet.css";
+  import L from "leaflet";
+  import * as Plot from "@observablehq/plot";
+  import stations from "../data/tendances-stations.json";
+  import { ORDRE } from "../scripts/outils.js";
+  import { carteStations } from "../scripts/v2-carte.js";
+
+  // une seule échelle de couleur pour les 3 cartes : de 0 au réchauffement maximal
+  const max = Math.max(...stations.filter((d) => d.latitude != null).map((d) => d.tendance));
+  const optionsCouleur = { type: "linear", scheme: "OrRd", domain: [0, max], label: "Réchauffement depuis 1970 (°C par décennie)", tickFormat: "+.2f" } as const;
+  const echelle = Plot.scale({ color: optionsCouleur });
+  const couleur = (x: number) => echelle.apply(x) as string;
+
+  document.getElementById("v2")!.replaceChildren(Plot.legend({ color: optionsCouleur, width: 320 }));
+  ORDRE.forEach((territoire, i) => carteStations(document.getElementById(`v2-carte-${i}`)!, stations, { territoire, couleur, L }));
+</script>

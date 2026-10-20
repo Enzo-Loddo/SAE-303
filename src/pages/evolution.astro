@@ -1,10 +1,68 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
-// import Figure from "../components/Figure.astro";
-// import * as Plot from "@observablehq/plot";
+import GraphiqueClient from "../components/GraphiqueClient.astro";
+import tmTerritoire from "../data/tm-territoire.json";
+import { ORDRE, signe } from "../scripts/outils.js";
+import { tendancesTerritoires, titreV3 } from "../scripts/v3-evolution.js";
+
+// état de départ (les 3 territoires) : titre et tendances écrits dans la page, mis à jour par le script
+const tendances = tendancesTerritoires(tmTerritoire);
 ---
 <QuestionPage slug="evolution">
+  <GraphiqueClient
+    id="v3"
+    titre={titreV3(tendances)}
+    sousTitre="Écart de la température moyenne annuelle à la moyenne 1991-2020, en °C, lissé sur 10 ans"
+    alt="Trois courbes qui montent de 1970 à 2024. La Martinique part le plus bas (environ −1,0 °C) et finit la plus haute (environ +0,65 °C) : c'est la plus forte hausse, environ 1,6 °C. La Réunion monte plus lentement et régulièrement, d'environ −0,55 à +0,45 °C. La Nouvelle-Calédonie se réchauffe surtout entre 1980 et 2000, marque un palier dans les années 2000, puis remonte jusqu'à environ +0,5 °C."
+    source="Météo-France, séries homogénéisées Outre-mer (températures TN et TX mensuelles), data.gouv.fr, données au 19/10/2026 · calculs SAE303 groupe 14"
+  >
+    <p slot="description">
+      Chaque courbe suit un territoire de 1970 à 2024 : plus elle est <b>raide</b>, plus le réchauffement est rapide. Tendance mesurée :
+      <span id="v3-tendances">
+        {tendances.map((d, i) => (
+          <>{i ? " · " : ""}<b>{d.territoire}</b> {signe(d.parDecennie)} °C par décennie (soit environ {signe(d.total)} °C en tout)</>
+        ))}
+      </span>. Le menu permet d'afficher un seul territoire ; survoler une courbe donne la valeur de chaque année.
+    </p>
+
+    <label slot="controles" class="flex flex-col">
+      <span class="font-semibold">Territoire</span>
+      <select id="v3-territoire" class="mt-1 rounded border border-line bg-white px-2 py-1">
+        <option>Les 3 territoires</option>
+        {ORDRE.map((t) => <option>{t}</option>)}
+      </select>
+    </label>
+  </GraphiqueClient>
+
   <p class="rounded border border-dashed border-line bg-white p-6">
-    <em>[À COMPLÉTER : graphique avec le composant Figure, puis la réponse en 2 ou 3 phrases.]</em>
+    <em>[À COMPLÉTER : la réponse en 2 ou 3 phrases.]</em>
   </p>
 </QuestionPage>
+
+<script>
+  import tmTerritoire from "../data/tm-territoire.json";
+  import { signe, suivreLargeur } from "../scripts/outils.js";
+  import { courbesAnomalies, tendancesTerritoires, titreV3 } from "../scripts/v3-evolution.js";
+
+  const conteneur = document.getElementById("v3")!;
+  const menu = document.getElementById("v3-territoire") as HTMLSelectElement;
+  const alt = document.getElementById("v3-alt")!.textContent ?? "";
+
+  function dessiner(width: number) {
+    const donnees = menu.value === "Les 3 territoires" ? tmTerritoire : tmTerritoire.filter((d) => d.territoire === menu.value);
+    const tendances = tendancesTerritoires(donnees);
+    const titre = titreV3(tendances);
+    document.getElementById("v3-titre")!.textContent = titre;
+    document.getElementById("v3-tendances")!.replaceChildren(
+      ...tendances.flatMap((d, i) => {
+        const b = document.createElement("b");
+        b.textContent = d.territoire;
+        return [i ? " · " : "", b, ` ${signe(d.parDecennie)} °C par décennie (soit environ ${signe(d.total)} °C en tout)`];
+      }),
+    );
+    conteneur.replaceChildren(courbesAnomalies(donnees, { width, ariaLabel: titre, ariaDescription: alt }));
+  }
+
+  const redessiner = suivreLargeur(conteneur, dessiner);
+  menu.addEventListener("change", redessiner);
+</script>

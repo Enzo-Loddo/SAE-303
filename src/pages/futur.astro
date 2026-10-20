@@ -1,10 +1,90 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
-// import Figure from "../components/Figure.astro";
-// import * as Plot from "@observablehq/plot";
+import GraphiqueClient from "../components/GraphiqueClient.astro";
+import tmTerritoire from "../data/tm-territoire.json";
+import projectionsTMm from "../data/projections-tmm.json";
+import { ANNEE_ACTUELLE, textesV4 } from "../scripts/v4-futur.js";
+
+const HORIZONS = ["2030", "2050", "2100"];
+const depart = "2050";
+// état de départ (horizon 2050) : titre, sous-titre et note écrits dans la page, mis à jour par le script
+const textes = textesV4(projectionsTMm, tmTerritoire, depart);
 ---
 <QuestionPage slug="futur">
+  <GraphiqueClient
+    id="v4"
+    titre={textes.titre}
+    sousTitre={textes.sousTitre}
+    alt="Pour chaque territoire, la température moyenne d'aujourd'hui et la projection. Aujourd'hui (2026, estimé) : environ 26,8 °C en Martinique, 20,3 °C à La Réunion, 23,0 °C en Nouvelle-Calédonie. En 2050, la projection médiane est d'environ 27,2 °C, 21,0 °C et 23,5 °C, soit +1,1 à +1,2 °C par rapport à 1991-2020. En 2100 : environ 28,0 °C, 21,9 °C et 24,5 °C (+1,8 à +2,1 °C). En 2030, la projection de la Martinique (+0,57 °C) est sous la valeur d'aujourd'hui (+0,67 °C), car ses stations se réchauffent déjà plus vite que la moyenne des modèles."
+    source="Météo-France, projections Socle Outre-Mer 2025 (indicateur TMm, niveaux de réchauffement TRACC) et séries homogénéisées Outre-mer, data.gouv.fr, données au 19/10/2026 · calculs SAE303 groupe 14. Températures : moyenne annuelle sur tout le territoire ; écarts mesurés par rapport à la moyenne 1991-2020."
+  >
+    <p slot="description">
+      Choisir un horizon avec les boutons au-dessus. Pour chaque territoire, la flèche pointillée va de la température d'aujourd'hui (cercle vide)
+      à la projection (point rouge). La légende ci-dessous explique les trois symboles et la marge d'incertitude.
+    </p>
+
+    <fieldset slot="controles" id="v4-horizon">
+      <legend class="font-semibold">Horizon (TRACC)</legend>
+      <div class="mt-1 flex gap-4">
+        {HORIZONS.map((h) => (
+          <label class="inline-flex items-center gap-1.5">
+            <input type="radio" name="v4-horizon" value={h} checked={h === depart} /> {h}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <div slot="avant" class="mt-4 text-sm leading-relaxed text-ink/90">
+      <p>
+        <span class="inline-block h-3 w-3 rounded-full border-2 border-[#333] align-middle"></span>
+        <b>Aujourd'hui ({ANNEE_ACTUELLE})</b> : température moyenne de l'année estimée en prolongeant la tendance mesurée par les stations depuis 1970.
+      </p>
+      <p>
+        <span class="inline-block h-3.5 w-3.5 rounded-full bg-[#d6604d] align-middle"></span>
+        <b>En <span data-horizon>{depart}</span></b> : valeur centrale des projections (la moitié des simulations donne plus, l'autre moitié moins).
+      </p>
+      <p>
+        <span class="inline-block h-3 w-8 bg-[#d6604d] align-middle opacity-30"></span>
+        <b>La marge</b> autour du point rouge : 90 % des simulations des modèles climatiques donnent une valeur dans cette bande (du 5<sup>e</sup>
+        au 95<sup>e</sup> centile). Plus elle est large, plus l'avenir est incertain.
+      </p>
+    </div>
+
+    <p id="v4-note" class="mt-2 border-l-4 border-[#d6604d] bg-[#fdf1ec] px-3 py-2 text-sm" hidden={textes.enAvance.length === 0} aria-live="polite">
+      <b>À noter :</b> en <span data-territoires>{textes.enAvance.join(" et ")}</span>, le point « En <span data-horizon>{depart}</span> » est à
+      gauche du point « Aujourd'hui ». Ce n'est pas une erreur : les stations météo y mesurent déjà un réchauffement plus rapide que la moyenne des
+      modèles climatiques sur tout le territoire. La valeur d'aujourd'hui dépasse donc la projection médiane, tout en restant dans la marge des
+      simulations ou très près.
+    </p>
+  </GraphiqueClient>
+
   <p class="rounded border border-dashed border-line bg-white p-6">
-    <em>[À COMPLÉTER : graphique avec le composant Figure, puis la réponse en 2 ou 3 phrases.]</em>
+    <em>[À COMPLÉTER : la réponse en 2 ou 3 phrases.]</em>
   </p>
 </QuestionPage>
+
+<script>
+  import tmTerritoire from "../data/tm-territoire.json";
+  import projectionsTMm from "../data/projections-tmm.json";
+  import { suivreLargeur } from "../scripts/outils.js";
+  import { projectionHorizon, textesV4 } from "../scripts/v4-futur.js";
+
+  const conteneur = document.getElementById("v4")!;
+  const boutons = [...document.querySelectorAll<HTMLInputElement>("#v4-horizon input")];
+  const note = document.getElementById("v4-note")!;
+  const alt = document.getElementById("v4-alt")!.textContent ?? "";
+
+  function dessiner(width: number) {
+    const horizon = boutons.find((b) => b.checked)?.value ?? "2050";
+    const textes = textesV4(projectionsTMm, tmTerritoire, horizon);
+    document.getElementById("v4-titre")!.textContent = textes.titre;
+    document.getElementById("v4-sous-titre")!.textContent = textes.sousTitre;
+    conteneur.closest("figure")!.querySelectorAll("[data-horizon]").forEach((el) => (el.textContent = horizon));
+    note.hidden = textes.enAvance.length === 0;
+    note.querySelector("[data-territoires]")!.textContent = textes.enAvance.join(" et ");
+    conteneur.replaceChildren(projectionHorizon(projectionsTMm, tmTerritoire, horizon, { width, ariaLabel: textes.titre, ariaDescription: alt }));
+  }
+
+  const redessiner = suivreLargeur(conteneur, dessiner);
+  boutons.forEach((b) => b.addEventListener("change", redessiner));
+</script>

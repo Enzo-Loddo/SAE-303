@@ -1,10 +1,97 @@
 ---
 import QuestionPage from "../components/QuestionPage.astro";
-// import Figure from "../components/Figure.astro";
-// import * as Plot from "@observablehq/plot";
+import GraphiqueClient from "../components/GraphiqueClient.astro";
+import tmTerritoire from "../data/tm-territoire.json";
+import { ORDRE } from "../scripts/outils.js";
+import { selectionV1 } from "../scripts/v1-distribution.js";
+
+const annees = tmTerritoire.map((d) => d.annee);
+const [min, max] = [Math.min(...annees), Math.max(...annees)];
+// état de départ (tous les territoires, toute la période) : textes écrits dans la page, mis à jour par le script
+const depart = selectionV1(tmTerritoire, { territoires: ORDRE, debut: min, fin: max });
 ---
 <QuestionPage slug="repartition">
+  <GraphiqueClient
+    id="v1"
+    titre="Les années les plus chaudes sont presque toutes récentes"
+    sousTitre={depart.sousTitre}
+    alt="Trois rangées de points, une par territoire. Dans chacune, les points clairs des années 70 et 80 sont à gauche (jusqu'à 1,2 °C sous la moyenne 1991-2020) et les points foncés des années 2010 et 2020 à droite. Les 10 années les plus chaudes datent toutes de 1998 ou après en Martinique (record 2024 : +1,47 °C), de 2010 ou après à La Réunion (record 2019 : +0,91 °C) et de 1988 ou après en Nouvelle-Calédonie (record 2022 : +1,27 °C)."
+    source="Météo-France, séries homogénéisées Outre-mer (températures TN et TX mensuelles), data.gouv.fr, données au 19/10/2026 · calculs SAE303 groupe 14"
+  >
+    <p slot="description">
+      Chaque point est une année : plus il est <b>à droite</b>, plus l'année a été chaude ; plus il est <b>foncé</b>, plus elle est récente. Les
+      points <b>cerclés de noir</b> sont les <span data-ntop>{depart.nTop}</span> années les plus chaudes de la période dans chaque territoire :
+      ils sont presque tous foncés, donc récents. Les filtres permettent de n'afficher qu'un territoire ou qu'une période.
+    </p>
+
+    <fieldset slot="controles" id="v1-territoires">
+      <legend class="font-semibold">Territoires</legend>
+      <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+        {ORDRE.map((t) => (
+          <label class="inline-flex items-center gap-1.5">
+            <input type="checkbox" name="territoire" value={t} checked /> {t}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+    <div slot="controles" class="flex flex-wrap gap-x-6 gap-y-2">
+      <label class="flex flex-col">
+        <span class="font-semibold">De l'année : <output id="v1-debut-valeur">{min}</output></span>
+        <input id="v1-debut" type="range" min={min} max={max} step="1" value={min} />
+      </label>
+      <label class="flex flex-col">
+        <span class="font-semibold">À l'année : <output id="v1-fin-valeur">{max}</output></span>
+        <input id="v1-fin" type="range" min={min} max={max} step="1" value={max} />
+      </label>
+    </div>
+
+    <ul id="v1-resume" class="mt-2 list-disc pl-5 text-sm" aria-live="polite">
+      {depart.resume.map((r) => <li><b>{r.territoire}</b> : {r.texte}</li>)}
+    </ul>
+  </GraphiqueClient>
+
   <p class="rounded border border-dashed border-line bg-white p-6">
-    <em>[À COMPLÉTER : graphique avec le composant Figure, puis la réponse en 2 ou 3 phrases.]</em>
+    <em>[À COMPLÉTER : la réponse en 2 ou 3 phrases.]</em>
   </p>
 </QuestionPage>
+
+<script>
+  import tmTerritoire from "../data/tm-territoire.json";
+  import { suivreLargeur } from "../scripts/outils.js";
+  import { selectionV1, distributionAnnees } from "../scripts/v1-distribution.js";
+
+  const conteneur = document.getElementById("v1")!;
+  const cases = [...document.querySelectorAll<HTMLInputElement>("#v1-territoires input")];
+  const debut = document.getElementById("v1-debut") as HTMLInputElement;
+  const fin = document.getElementById("v1-fin") as HTMLInputElement;
+  const titre = document.getElementById("v1-titre")!.textContent ?? "";
+  const alt = document.getElementById("v1-alt")!.textContent ?? "";
+
+  function dessiner(width: number) {
+    document.getElementById("v1-debut-valeur")!.textContent = debut.value;
+    document.getElementById("v1-fin-valeur")!.textContent = fin.value;
+    const territoires = cases.filter((c) => c.checked).map((c) => c.value);
+    const resume = document.getElementById("v1-resume")!;
+    if (territoires.length === 0) {
+      conteneur.innerHTML = "<p><i>Coche au moins un territoire.</i></p>";
+      resume.replaceChildren();
+      return;
+    }
+    const sel = selectionV1(tmTerritoire, { territoires, debut: +debut.value, fin: +fin.value });
+    document.getElementById("v1-sous-titre")!.textContent = sel.sousTitre;
+    document.querySelector("#v1-description [data-ntop]")!.textContent = String(sel.nTop);
+    resume.replaceChildren(
+      ...sel.resume.map((r) => {
+        const li = document.createElement("li");
+        const b = document.createElement("b");
+        b.textContent = r.territoire;
+        li.append(b, ` : ${r.texte}`);
+        return li;
+      }),
+    );
+    conteneur.replaceChildren(distributionAnnees(tmTerritoire, sel, { width, ariaLabel: titre, ariaDescription: alt }));
+  }
+
+  const redessiner = suivreLargeur(conteneur, dessiner);
+  [...cases, debut, fin].forEach((el) => el.addEventListener("input", redessiner));
+</script>
