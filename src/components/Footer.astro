@@ -1,0 +1,61 @@
+---
+import { SITE, MENU, QUESTIONS, TERRITOIRES } from "../config/site.js";
+const liensPages = MENU.filter((m) => m.href);
+const annee = new Date().getFullYear();
+---
+<footer class="mt-20 bg-ink text-paper">
+  <!-- Bandeau décoratif : les trois couleurs des territoires -->
+  <div class="flex h-1.5" aria-hidden="true">
+    {TERRITOIRES.map((t) => <div class="flex-1" style={`background:${t.couleur}`}></div>)}
+  </div>
+
+  <div class="mx-auto grid max-w-5xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-3">
+    <div>
+      <a href="/" class="flex items-center gap-3 font-serif text-lg font-bold">
+        <img src="/logo.svg" width="40" height="40" alt="" />
+        <span>{SITE.nom}</span>
+      </a>
+      <p class="mt-4 text-sm leading-relaxed text-paper/80">{SITE.question}</p>
+      <p class="mt-4 text-sm text-paper/80">Réalisé par {SITE.auteurs}.<br />{SITE.cadre}.</p>
+    </div>
+
+    <nav aria-label="Plan du site">
+      <h2 class="font-serif text-base font-bold">Parcourir</h2>
+      <ul class="mt-4 space-y-2 text-sm">
+        {liensPages.map((l) => (
+          <li><a class="underline-offset-4 hover:underline" href={l.href}>{l.label}</a></li>
+        ))}
+        {QUESTIONS.map((q) => (
+          <li><a class="underline-offset-4 hover:underline" href={`/${q.slug}`}>{q.menu}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-serif text-base font-bold">Sources des données</h2>
+      <ul class="mt-4 space-y-3 text-sm leading-relaxed text-paper/90">
+        <li>
+          <strong>Météo-France</strong> : séries longues homogénéisées (LSH), températures et
+          précipitations mensuelles des stations.
+        </li>
+        <li>
+          <strong>Météo-France</strong> : projections climatiques Socle Outre-Mer 2025.
+        </li>
+        <li>
+          Diffusion : <a class="underline underline-offset-4 hover:no-underline" href="https://www.data.gouv.fr">data.gouv.fr</a>.
+          Détails sur la page <a class="underline underline-offset-4 hover:no-underline" href="/methode">Méthode</a>.
+        </li>
+        <li>
+          <a class="underline underline-offset-4 hover:no-underline" href={SITE.notebook}>Notebook Observable</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-paper/20">
+    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4 text-xs text-paper/70">
+      <p>© {annee} {SITE.auteurs}. Projet pédagogique.</p>
+      <a class="underline underline-offset-4 hover:no-underline" href="#haut">Remonter en haut de la page ↑</a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,49 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SITE, QUESTIONS } from "../config/site.js";
+---
+<Layout title="Conclusion" description="Ce que cette enquête apprend sur le changement climatique dans les DOM-TOM, et pourquoi cela compte.">
+  <h1 class="max-w-3xl text-3xl font-bold sm:text-4xl">Conclusion : même mot, pas la même réalité ?</h1>
+  <p class="mt-5 max-w-2xl text-lg">
+    Notre question de départ : « {SITE.question} » Cette page rassemble ce que les mesures répondent
+    et explique à quoi sert cette enquête.
+  </p>
+
+  <section aria-labelledby="t-reponses" class="mt-12">
+    <h2 id="t-reponses" class="text-2xl font-bold">Ce que nous avons trouvé</h2>
+    <ol class="mt-5 space-y-4">
+      {QUESTIONS.map((q) => (
+        <li class="rounded border border-line bg-white p-4">
+          <a class="font-bold text-accent underline underline-offset-4" href={`/${q.slug}`}>{q.question}</a>
+          <p class="mt-1"><em>[À COMPLÉTER : la réponse en une phrase, avec le chiffre clé.]</em></p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section aria-labelledby="t-finalite" class="mt-12">
+    <h2 id="t-finalite" class="text-2xl font-bold">À quoi sert cette enquête</h2>
+    <p class="mt-3 max-w-2xl">
+      Parler de « réchauffement » en général cache des écarts entre territoires : de rythme, de zone,
+      de saison, d'effet sur la pluie. Regarder chaque île avec ses propres mesures permet de
+      comprendre ce qui la concerne vraiment, plutôt que de se fier à une moyenne mondiale.
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <em>[À COMPLÉTER : pour votre public choisi, ce que cela change concrètement (décisions, vigilance,
+      adaptation).]</em>
+    </p>
+  </section>
+
+  <section aria-labelledby="t-limites" class="mt-12">
+    <h2 id="t-limites" class="text-2xl font-bold">Ce qu'il faut garder en tête</h2>
+    <ul class="mt-3 max-w-2xl list-disc space-y-2 pl-6">
+      <li>Le nombre de stations varie selon le territoire : certaines îles reposent sur très peu de mesures.</li>
+      <li>Les projections décrivent des paliers de réchauffement, pas une date précise.</li>
+      <li><em>[À COMPLÉTER : autres limites issues de la page Méthode.]</em></li>
+    </ul>
+  </section>
+
+  <p class="mt-12">
+    <a class="underline underline-offset-4" href={SITE.notebook}>Retrouver tout le détail dans le notebook Observable →</a>
+  </p>
+</Layout>

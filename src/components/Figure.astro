@@ -1,0 +1,18 @@
+---
+// Enveloppe accessible pour CHAQUE graphique du site.
+// Usage :
+//   <Figure titre="Phrase porteuse" alt="Ce que montre le graphique, en mots"
+//           source="Météo-France, ..., données au 19/10/2026" options={{ marks: [...] }} />
+import PlotFigure from "./PlotFigure.astro";
+const { titre, alt, source, options } = Astro.props;
+---
+<figure class="my-8 rounded border border-line bg-white p-4" aria-label={titre}>
+  <div role="img" aria-label={alt}>
+    <PlotFigure options={{ ariaLabel: titre, style: { background: "transparent" }, ...options }} />
+  </div>
+  <figcaption class="mt-3 text-sm">
+    <strong>{titre}</strong>
+    <span class="block">{alt}</span>
+    <span class="block text-ink/70">Source : {source}</span>
+  </figcaption>
+</figure>

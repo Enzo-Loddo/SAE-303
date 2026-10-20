@@ -1,0 +1,139 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SITE } from "../config/site.js";
+---
+<Layout title="Méthode" description="Sources, traitements, limites et biais de l'enquête Climat Outre-Mer : tout ce qui permet de vérifier nos résultats.">
+  <h1 class="max-w-3xl text-3xl font-bold sm:text-4xl">Méthode : comment vérifier ce que nous avançons</h1>
+  <p class="mt-5 max-w-2xl text-lg">
+    Cette page dit d'où viennent les données, ce que nous en avons fait, et ce qu'elles ne permettent pas
+    de dire. Tout ce qui est publié ici peut être vérifié.
+  </p>
+
+  <!-- 1. SOURCES -->
+  <section aria-labelledby="t-sources" class="mt-12">
+    <h2 id="t-sources" class="text-2xl font-bold">1. Sources et licences</h2>
+    <div class="mt-5 overflow-x-auto">
+      <table class="w-full min-w-[40rem] border-collapse bg-white text-left text-sm">
+        <caption class="sr-only">Jeux de données utilisés</caption>
+        <thead class="bg-paper">
+          <tr>
+            <th scope="col" class="border border-line p-3">Jeu de données</th>
+            <th scope="col" class="border border-line p-3">Producteur</th>
+            <th scope="col" class="border border-line p-3">Ce que nous en avons pris</th>
+            <th scope="col" class="border border-line p-3">Licence</th>
+            <th scope="col" class="border border-line p-3">Récupéré le</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="border border-line p-3">Séries longues homogénéisées (LSH), Outre-mer</th>
+            <td class="border border-line p-3">Météo-France, via data.gouv.fr</td>
+            <td class="border border-line p-3">Températures minimales (TN), maximales (TX) et précipitations (RR) mensuelles des stations de Martinique, La Réunion et Nouvelle-Calédonie</td>
+            <td class="border border-line p-3"><em>[À VÉRIFIER sur la page du jeu de données]</em></td>
+            <td class="border border-line p-3">19 octobre 2026</td>
+          </tr>
+          <tr>
+            <th scope="row" class="border border-line p-3">
+              <a class="underline underline-offset-4" href="https://www.data.gouv.fr/datasets/projections-climatiques-pour-le-hackathon-2025-socle-outre-mer">Projections climatiques pour le Hackathon 2025 – Socle Outre-Mer</a>
+            </th>
+            <td class="border border-line p-3">Météo-France, via data.gouv.fr</td>
+            <td class="border border-line p-3">Écarts projetés de température moyenne (TMm) et de précipitations (PRCPTOT) par rapport à 1991-2020, pour trois niveaux de réchauffement</td>
+            <td class="border border-line p-3">Licence Ouverte 2.0</td>
+            <td class="border border-line p-3">19 octobre 2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. TRAITEMENTS -->
+  <section aria-labelledby="t-traitements" class="mt-12">
+    <h2 id="t-traitements" class="text-2xl font-bold">2. Ce que nous avons fait aux données</h2>
+    <ul class="mt-4 max-w-3xl list-disc space-y-3 pl-6">
+      <li>
+        <strong>Territoires retenus.</strong> Sur 169 fichiers de stations (126 282 lignes mensuelles), nous gardons
+        la Martinique, La Réunion et la Nouvelle-Calédonie. Les autres territoires (Guadeloupe, Guyane et
+        un groupe supplémentaire) sont écartés : 46 560 lignes.
+      </li>
+      <li>
+        <strong>Mois vides.</strong> 16 mois sans valeur sont retirés. Ils ne sont ni remplacés par zéro ni estimés.
+      </li>
+      <li>
+        <strong>Valeurs.</strong> Aucune valeur de température ou de pluie n'est modifiée : elles sont identiques aux fichiers d'origine.
+      </li>
+      <li>
+        <strong>Mise en forme.</strong> Les 106 fichiers de stations sont assemblés en un seul tableau (territoire, variable, station,
+        année, mois, valeur). Le territoire est déduit des trois premiers chiffres du numéro de poste.
+      </li>
+      <li>
+        <strong>Mois non homogénéisés.</strong> Nous les <em>conservons</em> (8 414 mois). Ce choix est discuté
+        dans la section Limites. <em>[À COMPLÉTER : justification de l'équipe, avec vos mots]</em>
+      </li>
+      <li>
+        <strong>Période d'étude.</strong> Les mesures sont retenues à partir de 1970. La référence est la moyenne 1991-2020 de chaque station.
+      </li>
+      <li>
+        <strong>Anomalies.</strong> Pour chaque station, nous calculons l'écart à sa propre moyenne 1991-2020 (en °C pour la température,
+        en % pour la pluie), puis nous faisons la moyenne des stations de chaque territoire.
+      </li>
+      <li>
+        <strong>Température moyenne.</strong> Elle vaut (TN + TX) / 2, calculée pour les années où une station mesure les deux.
+        Une année n'est comptée que si elle contient ses 12 mois <em>[À VÉRIFIER dans le notebook]</em>.
+      </li>
+      <li>
+        <strong>Projections.</strong> Pour chaque territoire, nous avons pris la médiane de l'ensemble de modèles (avec les valeurs
+        basse et haute q05 et q95), moyennée sur toutes les mailles terrestres, sans pondération par la surface.
+      </li>
+    </ul>
+  </section>
+
+  <!-- 3. JOINTURES -->
+  <section aria-labelledby="t-jointures" class="mt-12">
+    <h2 id="t-jointures" class="text-2xl font-bold">3. Ce que nos croisements ont laissé de côté</h2>
+    <p class="mt-3 max-w-3xl">
+      Associer la température minimale et la température maximale d'une même station n'est possible que si les deux existent.
+      Sept stations n'en mesurent qu'une : elles sont écartées de la température moyenne (385 années-stations perdues). Elles restent utilisées pour la température minimale ou maximale prise seule.
+    </p>
+    <ul class="mt-4 max-w-3xl list-disc space-y-1 pl-6">
+      <li>Martinique : 3 stations conservées, 2 écartées.</li>
+      <li>La Réunion : 4 stations conservées, 3 écartées.</li>
+      <li>Nouvelle-Calédonie : 15 stations conservées, 2 écartées.</li>
+    </ul>
+    <p class="mt-3 max-w-3xl text-sm text-ink/80">
+      Aucune station n'est écartée par la période de référence 1991-2020 : toutes y ont au moins 25 années.
+    </p>
+  </section>
+
+  <!-- 4. LIMITES -->
+  <section aria-labelledby="t-limites" class="mt-12">
+    <h2 id="t-limites" class="text-2xl font-bold">4. Limites et biais</h2>
+    <ul class="mt-4 max-w-3xl list-disc space-y-3 pl-6">
+      <li><strong>Peu de stations.</strong> La Martinique repose sur 3 stations de température : un résultat sur l'île entière reste fragile.</li>
+      <li><strong>Inégalité entre territoires.</strong> La Nouvelle-Calédonie, bien plus étendue, a bien plus de stations. Les comparaisons ne pèsent pas les territoires de la même façon.</li>
+      <li><strong>Données homogénéisées et non homogénéisées.</strong> Une partie des mois n'a pas été corrigée des changements d'instrument ou de lieu : c'est près de 19 % des mois de température à La Réunion et 15 % en Nouvelle-Calédonie.</li>
+      <li><strong>Stations côtières ou en altitude.</strong> Une station n'est pas représentative de toute l'île : l'altitude et la distance à la mer changent la température.</li>
+      <li><strong>Projections par paliers, pas par années.</strong> Elles décrivent « le territoire quand le monde atteint +1,5, +2 ou +3 °C », pas une date. <em>[À COMPLÉTER : comment nous traduisons cela pour « 2050 »]</em></li>
+      <li><strong>Moyenne spatiale non pondérée.</strong> Les mailles des projections ne sont pas pondérées par leur surface.</li>
+      <li><strong>Température moyenne approchée.</strong> (TN + TX) / 2 n'est pas la moyenne réelle de la journée.</li>
+    </ul>
+  </section>
+
+  <!-- 5. DONNÉES ET CODE -->
+  <section aria-labelledby="t-donnees" class="mt-12">
+    <h2 id="t-donnees" class="text-2xl font-bold">5. Refaire le calcul soi-même</h2>
+    <ul class="mt-4 max-w-3xl list-disc space-y-2 pl-6">
+      <li><a class="underline underline-offset-4" href={SITE.notebook}>Notebook Observable</a> : tout le nettoyage, les jointures et les calculs, cellule par cellule.</li>
+      <li>Données préparées pour le site : <em>[À COMPLÉTER : liens vers les fichiers JSON allégés une fois publiés]</em></li>
+      <li>Code du site : <em>[À COMPLÉTER : lien du dépôt GitHub]</em></li>
+    </ul>
+  </section>
+
+  <!-- 6. IA -->
+  <section aria-labelledby="t-ia" class="mt-12">
+    <h2 id="t-ia" class="text-2xl font-bold">6. Usage de l'IA</h2>
+    <p class="mt-3 max-w-3xl">
+      Une IA (Claude) a aidé à nettoyer les données, à écrire une partie du code et à rédiger des textes. Chaque usage est déclaré dans notre
+      journal IA, remis avec le notebook. <em>[À COMPLÉTER : vos propres relectures et décisions]</em>
+    </p>
+  </section>
+</Layout>

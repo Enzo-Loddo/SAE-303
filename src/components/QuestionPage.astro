@@ -1,0 +1,29 @@
+---
+// Gabarit des 5 pages de questions : titre, graphique(s), réponse, précédent/suivant.
+// Usage dans src/pages/xxx.astro :
+//   <QuestionPage slug="evolution">  ...contenu : <Figure/> + texte...  </QuestionPage>
+import Layout from "../layouts/Layout.astro";
+import { QUESTIONS } from "../config/site.js";
+const { slug } = Astro.props;
+const i = QUESTIONS.findIndex((q) => q.slug === slug);
+const q = QUESTIONS[i];
+const avant = QUESTIONS[i - 1];
+const apres = QUESTIONS[i + 1];
+---
+<Layout title={q.question} description={q.question}>
+  <nav aria-label="Fil d'Ariane" class="text-sm">
+    <a class="underline underline-offset-4" href="/">Accueil</a> › <span>{q.menu}</span>
+  </nav>
+  <h1 class="mt-4 max-w-3xl text-3xl font-bold sm:text-4xl">{q.question}</h1>
+
+  <div class="mt-8">
+    <slot />
+  </div>
+
+  <nav aria-label="Autres questions" class="mt-14 flex flex-wrap justify-between gap-4 border-t border-line pt-6">
+    {avant ? <a class="underline underline-offset-4" href={`/${avant.slug}`}>← {avant.menu}</a> : <span></span>}
+    {apres
+      ? <a class="underline underline-offset-4" href={`/${apres.slug}`}>{apres.menu} →</a>
+      : <a class="underline underline-offset-4" href="/conclusion">Conclusion →</a>}
+  </nav>
+</Layout>

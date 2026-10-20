@@ -1,21 +1,64 @@
 ---
-import PlotFigure from "../components/PlotFigure.astro";
 import Layout from "../layouts/Layout.astro";
-import * as Plot from "@observablehq/plot";
-import penguins from "../assets/penguins.json";
----
+import { SITE, TERRITOIRES, QUESTIONS } from "../config/site.js";
 
+---
 <Layout>
-  <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-  <PlotFigure
-    options={{
-      marks: [
-        Plot.dot(penguins, {
-          x: "culmen_length_mm",
-          y: "culmen_depth_mm",
-          stroke: "species",
-        }),
-      ],
-    }}
-  />
+  <!-- 1. Titre : la question de l'enquête -->
+  <section aria-labelledby="titre-page">
+    <h1 id="titre-page" class="hero-in text-3xl font-bold sm:text-5xl">{SITE.question}</h1>
+    <p class="hero-in mt-5 max-w-2xl text-lg">
+      Trois îles, trois océans, un même mot : « réchauffement ». Cette enquête compare ce que disent
+      réellement les mesures de Météo-France pour chacune. <em>[À COMPLÉTER : accroche pour le public choisi]</em>
+    </p>
+  </section>
+
+  <!-- 2. Les trois territoires : silhouettes de même taille, dans la couleur de chaque territoire -->
+  <section aria-labelledby="titre-territoires" class="mt-14">
+    <h2 id="titre-territoires" class="text-2xl font-bold">Trois territoires</h2>
+    <ul class="mt-6 grid gap-6 sm:grid-cols-3">
+      {TERRITOIRES.map((t, i) => (
+        <li class="reveal" style={`--d:${i * 200}ms`}>
+          <figure class="carte-territoire flex h-full flex-col items-center rounded-lg border border-line bg-white px-4 pb-5 pt-4 text-center transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <img
+              src={t.image}
+              alt={`Silhouette de ${t.nom}`}
+              width="480"
+              height="480"
+              class="silhouette aspect-square w-full max-w-56 object-contain"
+            />
+            <figcaption class="mt-2">
+              <span class="block font-serif text-lg font-bold">{t.nom}</span>
+              <span class="block text-sm text-ink/80">{t.ocean}</span>
+              <span class="mx-auto mt-3 block h-1.5 w-12 rounded" style={`background:${t.couleur}`} aria-hidden="true"></span>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- 3. Les questions auxquelles le site répond -->
+  <section aria-labelledby="titre-questions" class="mt-14">
+    <h2 id="titre-questions" class="text-2xl font-bold">Cinq questions, cinq réponses</h2>
+    <ol class="mt-5 list-decimal space-y-2 pl-6">
+      {QUESTIONS.map((q) => (
+        <li><a class="underline underline-offset-4 hover:text-accent" href={`/${q.slug}`}>{q.question}</a></li>
+      ))}
+    </ol>
+    <p class="mt-3 text-sm text-ink/70">
+      Chaque question a sa page, accessible depuis le menu « Les questions », avec un graphique et sa réponse. La page Conclusion les rassemble.
+    </p>
+  </section>
+
+  <!-- 4. Le récit en 4 temps (titres provisoires à réécrire en phrases porteuses) -->
+  <section aria-labelledby="titre-recit" class="mt-14">
+    <h2 id="titre-recit" class="text-2xl font-bold">Comment lire ce site</h2>
+    <ol class="mt-5 grid gap-4 sm:grid-cols-2">
+      <li class="rounded border border-line bg-white p-4"><strong>1. Le contexte</strong><br />Pourquoi cette question, et d'où viennent les données.</li>
+      <li class="rounded border border-line bg-white p-4"><strong>2. L'exploration</strong><br />Ce que montrent les mesures depuis 1970.</li>
+      <li class="rounded border border-line bg-white p-4"><strong>3. La révélation</strong><br />Ce qui surprend quand on compare les territoires.</li>
+      <li class="rounded border border-line bg-white p-4"><strong>4. La conclusion</strong><br />La réponse à la question, et ses limites.</li>
+    </ol>
+  </section>
 </Layout>

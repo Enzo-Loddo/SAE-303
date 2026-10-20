@@ -1,1 +1,55 @@
 @import "tailwindcss";
+
+/* ── IDENTITÉ : palette de CHARTE (interface, textes, fonds) ──
+   Distincte de la palette des DONNÉES ci-dessous. */
+@theme {
+  --color-ink: #1f2a37;
+  --color-paper: #f6f3ee;
+  --color-accent: #4a3f6b;
+  --color-line: #d9d3c7;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+}
+
+/* ── PALETTE DES DONNÉES (Okabe-Ito, lisible en daltonisme) ──
+   Ne jamais l'utiliser pour l'interface. */
+:root {
+  --d-martinique: #0072b2;
+  --d-reunion: #d55e00;
+  --d-caledonie: #009e73;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); line-height: 1.65; }
+h1, h2, h3 { font-family: var(--font-serif); line-height: 1.2; }
+
+/* Accessibilité : focus visible partout, mouvement réduit respecté */
+:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ── ANIMATIONS ──────────────────────────────────────────────
+   Les états « cachés » n'existent que si la classe .js est posée
+   (voir Layout.astro) : sans JavaScript ou avec « mouvement réduit »,
+   tout reste visible. */
+@keyframes rise  { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes wipe  { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.hero-in { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero-in:nth-child(2) { animation-delay: 0.15s; }
+
+.js .reveal { opacity: 0; transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms); }
+.js .reveal.visible { opacity: 1; transform: none; }
+
+/* Silhouettes : le contour se dessine de gauche à droite, avec un décalage par territoire */
+.js .silhouette { clip-path: inset(0 100% 0 0); }
+.js .visible .silhouette { animation: wipe 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: calc(var(--d, 0ms) + 250ms); }
+.carte-territoire:hover .silhouette, .carte-territoire:focus-within .silhouette { animation: float 2.4s ease-in-out infinite; clip-path: inset(0 0 0 0); }
+
+/* Menu déroulant : apparition douce */
+details[open] > ul { animation: rise 0.2s ease both; }
