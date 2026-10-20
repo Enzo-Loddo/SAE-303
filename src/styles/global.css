@@ -19,7 +19,7 @@
   --d-caledonie: #009e73;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; }
 body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); line-height: 1.65; }
 h1, h2, h3 { font-family: var(--font-serif); line-height: 1.2; }
 
@@ -36,7 +36,6 @@ h1, h2, h3 { font-family: var(--font-serif); line-height: 1.2; }
    tout reste visible. */
 @keyframes rise  { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes wipe  { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
 .hero-in { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 .hero-in:nth-child(2) { animation-delay: 0.15s; }
@@ -49,7 +48,6 @@ h1, h2, h3 { font-family: var(--font-serif); line-height: 1.2; }
 /* Silhouettes : le contour se dessine de gauche à droite, avec un décalage par territoire */
 .js .silhouette { clip-path: inset(0 100% 0 0); }
 .js .visible .silhouette { animation: wipe 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards; animation-delay: calc(var(--d, 0ms) + 250ms); }
-.carte-territoire:hover .silhouette, .carte-territoire:focus-within .silhouette { animation: float 2.4s ease-in-out infinite; clip-path: inset(0 0 0 0); }
 
 /* Menu déroulant : apparition douce */
 details[open] > ul { animation: rise 0.2s ease both; }
@@ -59,7 +57,11 @@ details[open] > ul { animation: rise 0.2s ease both; }
    (classes posées par animer() dans src/lib/graphiques.js, seulement si .js). */
 @keyframes trace { to { stroke-dashoffset: 0; } }
 @keyframes pop   { from { opacity: 0; } to { opacity: 1; } }
-.js .trace { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trace 2s cubic-bezier(0.45, 0, 0.2, 1) forwards; }
-.js .pop   { opacity: 0; animation: pop 0.5s ease forwards; }
+.js figure:not([data-joue]) .trace { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trace 2s cubic-bezier(0.45, 0, 0.2, 1) forwards; }
+.js figure:not([data-joue]) .pop   { opacity: 0; animation: pop 0.5s ease forwards; }
 figure svg { max-width: 100%; height: auto; }
 input[type="range"] { cursor: pointer; }
+
+.leaflet-container { isolation: isolate; }
+.menu-liste { animation: rise 0.2s ease both; }
+.defile { }

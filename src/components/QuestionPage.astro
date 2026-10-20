@@ -4,6 +4,7 @@
 //   <QuestionPage slug="evolution">  ...contenu : <Figure/> + texte...  </QuestionPage>
 import Layout from "../layouts/Layout.astro";
 import { QUESTIONS } from "../config/site.js";
+import Parcours from "./Parcours.astro";
 const { slug } = Astro.props;
 const i = QUESTIONS.findIndex((q) => q.slug === slug);
 const q = QUESTIONS[i];
@@ -11,12 +12,11 @@ const avant = QUESTIONS[i - 1];
 const apres = QUESTIONS[i + 1];
 ---
 <Layout title={q.question} description={q.question}>
-  <nav aria-label="Fil d'Ariane" class="text-sm">
-    <a class="underline underline-offset-4" href="/">Accueil</a> › <span>{q.menu}</span>
-  </nav>
-  <h1 class="mt-4 max-w-3xl text-3xl font-bold sm:text-4xl">{q.question}</h1>
+  <div class="mx-auto max-w-2xl"><Parcours /></div>
+  <p class="hero-in mt-12 text-sm font-bold uppercase tracking-widest text-accent">Question {i + 1} sur {QUESTIONS.length}</p>
+  <h1 class="hero-in mt-3 max-w-3xl text-3xl font-bold leading-tight sm:text-5xl">{q.question}</h1>
 
-  <div class="mt-8">
+  <div class="mt-6">
     <slot />
   </div>
 

@@ -5,21 +5,24 @@ import { SITE, TERRITOIRES, QUESTIONS } from "../config/site.js";
 ---
 <Layout>
   <!-- 1. Titre : la question de l'enquête -->
-  <section aria-labelledby="titre-page">
-    <h1 id="titre-page" class="hero-in text-3xl font-bold sm:text-5xl">{SITE.question}</h1>
-    <p class="hero-in mt-5 max-w-2xl text-lg">
+  <section aria-labelledby="titre-page" class="mx-auto max-w-3xl pt-4 text-center sm:pt-10">
+    <p class="hero-in text-sm font-bold uppercase tracking-widest text-accent">Enquête · données Météo-France</p>
+    <h1 id="titre-page" class="hero-in mt-4 text-3xl font-bold leading-tight sm:text-5xl">{SITE.question}</h1>
+    <p class="hero-in mx-auto mt-6 max-w-2xl text-lg leading-relaxed">
+
       Trois îles, trois océans, un même mot : « réchauffement ». Cette enquête compare ce que disent
       réellement les mesures de Météo-France pour chacune. <em>[À COMPLÉTER : accroche pour le public choisi]</em>
     </p>
+    <p class="hero-in mt-8"><a href="/repartition" class="inline-block rounded-full bg-accent px-6 py-3 font-bold text-paper transition hover:-translate-y-0.5 hover:shadow-lg">Commencer le parcours →</a></p>
   </section>
 
   <!-- 2. Les trois territoires : silhouettes de même taille, dans la couleur de chaque territoire -->
-  <section aria-labelledby="titre-territoires" class="mt-14">
-    <h2 id="titre-territoires" class="text-2xl font-bold">Trois territoires</h2>
+  <section aria-labelledby="titre-territoires" class="mt-20">
+    <h2 id="titre-territoires" class="text-center text-2xl font-bold sm:text-3xl">Trois territoires</h2>
     <ul class="mt-6 grid gap-6 sm:grid-cols-3">
       {TERRITOIRES.map((t, i) => (
         <li class="reveal" style={`--d:${i * 200}ms`}>
-          <figure class="carte-territoire flex h-full flex-col items-center rounded-lg border border-line bg-white px-4 pb-5 pt-4 text-center transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <figure class="carte-territoire flex h-full flex-col items-center rounded-lg border border-line bg-white px-4 pb-5 pt-4 text-center">
             <img
               src={t.image}
               alt={`Silhouette de ${t.nom}`}
@@ -39,21 +42,21 @@ import { SITE, TERRITOIRES, QUESTIONS } from "../config/site.js";
   </section>
 
   <!-- 3. Les questions auxquelles le site répond -->
-  <section aria-labelledby="titre-questions" class="mt-14">
-    <h2 id="titre-questions" class="text-2xl font-bold">Cinq questions, cinq réponses</h2>
-    <ol class="mt-5 list-decimal space-y-2 pl-6">
+  <section aria-labelledby="titre-questions" class="mt-20">
+    <h2 id="titre-questions" class="text-2xl font-bold sm:text-3xl">Cinq questions, cinq réponses</h2>
+    <ol class="mt-6 max-w-3xl space-y-3">
       {QUESTIONS.map((q) => (
-        <li><a class="underline underline-offset-4 hover:text-accent" href={`/${q.slug}`}>{q.question}</a></li>
+        <li><a class="group flex items-start gap-4 rounded-xl border border-line bg-white p-4 transition hover:border-accent hover:shadow" href={`/${q.slug}`}><span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-paper">{QUESTIONS.indexOf(q) + 1}</span><span class="pt-0.5">{q.question}</span></a></li>
       ))}
     </ol>
-    <p class="mt-3 text-sm text-ink/70">
+    <p class="mt-4 max-w-3xl text-sm text-ink/70">
       Chaque question a sa page, accessible depuis le menu « Les questions », avec un graphique et sa réponse. La page Conclusion les rassemble.
     </p>
   </section>
 
   <!-- 4. Le récit en 4 temps (titres provisoires à réécrire en phrases porteuses) -->
-  <section aria-labelledby="titre-recit" class="mt-14">
-    <h2 id="titre-recit" class="text-2xl font-bold">Comment lire ce site</h2>
+  <section aria-labelledby="titre-recit" class="mt-20">
+    <h2 id="titre-recit" class="text-2xl font-bold sm:text-3xl">Comment lire ce site</h2>
     <ol class="mt-5 grid gap-4 sm:grid-cols-2">
       <li class="rounded border border-line bg-white p-4"><strong>1. Le contexte</strong><br />Pourquoi cette question, et d'où viennent les données.</li>
       <li class="rounded border border-line bg-white p-4"><strong>2. L'exploration</strong><br />Ce que montrent les mesures depuis 1970.</li>
