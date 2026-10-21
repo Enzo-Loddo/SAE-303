@@ -28,3 +28,4 @@ pnpm-debug.log*
 
 # données lourdes (sources du script de préparation, pas dans le dépôt)
 data-source/
+SAE-303/
