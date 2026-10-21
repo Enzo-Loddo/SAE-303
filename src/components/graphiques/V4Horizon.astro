@@ -12,7 +12,7 @@ const options = [
   titre="En 2050, il fera en moyenne +1,1 à +1,2 °C de plus qu'en 1991-2020"
   sousTitre="Température moyenne annuelle aujourd'hui (2026, estimée) et projetée à l'horizon choisi, par territoire"
   description="Choisir un horizon avec les boutons. Pour chaque territoire, la flèche pointillée va de la température d'aujourd'hui (cercle vide) à la projection (point rouge). La légende ci-dessous explique les trois symboles et la marge d'incertitude."
-  alt="Pour chaque territoire, la température moyenne d'aujourd'hui et la projection. Aujourd'hui (2026, estimé) : environ 26,8 °C en Martinique, 20,3 °C à La Réunion, 23,0 °C en Nouvelle-Calédonie. En 2050, la projection médiane est d'environ 27,2 °C, 21,0 °C et 23,5 °C, soit +1,1 à +1,2 °C par rapport à 1991-2020. En 2100 : environ 28,0 °C, 21,9 °C et 24,5 °C (+1,8 à +2,1 °C). En 2030, la projection de la Martinique (+0,57 °C) est sous la valeur d'aujourd'hui (+0,67 °C), car ses stations se réchauffent déjà plus vite que la moyenne des modèles."
+  alt="Pour chaque territoire, la température moyenne d'aujourd'hui et la projection. Aujourd'hui (2026, estimé) : environ 26,8 °C en Martinique, 20,3 °C à La Réunion, 22,9 °C en Nouvelle-Calédonie. En 2050, la projection médiane est d'environ 27,2 °C, 21,0 °C et 23,5 °C, soit +1,1 à +1,2 °C par rapport à 1991-2020. En 2100 : environ 28,0 °C, 21,9 °C et 24,5 °C (+1,8 à +2,1 °C). En 2030, la projection de la Martinique (+0,57 °C) est sous la valeur d'aujourd'hui (+0,67 °C), car ses stations se réchauffent déjà plus vite que la moyenne des modèles."
   source="Météo-France, projections Socle Outre-Mer 2025 (niveaux de réchauffement TRACC) et séries homogénéisées"
 >
   <div slot="controles">
@@ -41,7 +41,7 @@ const options = [
 
   function dessiner() {
     const horizon = fig.querySelector('input[name="v4-horizon"]:checked').value;
-    const r = graphiquePrevisions(projections, tm, { width: largeurDe(zone, 520), horizon });
+    const r = graphiquePrevisions(projections, tm, { width: largeurDe(zone, 300), horizon });
     afficher(zone, r.plot);
     titreEl.textContent = `En ${horizon}, il fera en moyenne ${r.titreEcart} de plus qu'en 1991-2020`;
     legendeHorizon.textContent = `En ${horizon}`;

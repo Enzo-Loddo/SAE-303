@@ -41,7 +41,7 @@ const options = [
       ? `${premier.t === "La Réunion" ? "La Réunion" : "La " + premier.t} se réchauffe le plus vite depuis 1970`
       : `${premier.t} : ${f(premier.parDecennie)} °C par décennie depuis 1970`;
     descEl.innerHTML = `Chaque courbe suit un territoire de 1970 à 2024 : plus elle est <b>raide</b>, plus le réchauffement est rapide. Tendance mesurée : ${tendances.map((d) => `<b>${d.t}</b> ${f(d.parDecennie)} °C par décennie (soit environ ${f(d.total)} °C en tout)`).join(" · ")}. Le menu permet d'afficher un seul territoire ; survoler une courbe donne la valeur de chaque année.`;
-    const r = courbesAnomalies(donnees, { width: largeurDe(zone, 420) });
+    const r = courbesAnomalies(donnees, { width: largeurDe(zone, 300) });
     const legende = document.createElement("div");
     legende.className = "mb-2";
     legende.append(r.legende);

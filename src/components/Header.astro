@@ -6,7 +6,8 @@ const lien = "rounded-full px-4 py-2 text-sm font-medium transition-colors hover
 ---
 <header id="entete" class="relative z-50 sm:sticky sm:top-0 border-b border-line bg-white/90 backdrop-blur transition-shadow duration-300 [&.defile]:shadow-md">
   <div class="bg-ink text-paper">
-    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-1.5 text-xs">
+    <!-- Bandeau d'ambiance (heure dans chaque territoire) : affiché sur ordinateur, masqué sur mobile pour libérer l'écran -->
+    <div class="mx-auto hidden max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-4 py-1.5 text-xs sm:flex">
       <p class="hidden sm:block"><span aria-hidden="true">☀</span> Enquête Météo-France · 1970-2024 · Outre-mer</p>
       <ul class="flex flex-wrap items-center gap-x-5 gap-y-1" aria-label="Heure actuelle dans chaque territoire">
         {TERRITOIRES.map((t) => (
