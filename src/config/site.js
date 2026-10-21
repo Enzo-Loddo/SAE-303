@@ -1,6 +1,6 @@
 export const SITE = {
   nom: "Climat Outre-Mer",
-  question: "Les DOM-TOM vivent-ils le même changement climatique, au même rythme ?",
+  question: "La Réunion, la Martinique et la Nouvelle-Calédonie vivent-elles le même changement climatique, au même rythme ?",
   description:
     "La Martinique, La Réunion et la Nouvelle-Calédonie se réchauffent-elles de la même façon ? Une enquête avec les données ouvertes de Météo-France.",
   auteurs: "Enzo Loddo et Ewan Menigoz",
@@ -12,7 +12,7 @@ export const QUESTIONS = [
   { slug: "repartition", temps: "Exploration", menu: "1 · Années chaudes", question: "Les années les plus chaudes sont-elles toutes récentes ?" },
   { slug: "carte", temps: "Exploration", menu: "2 · Zones", question: "À l'intérieur de chaque territoire, le réchauffement est-il partout le même, ou concentré dans certaines zones ?" },
   { slug: "evolution", temps: "Révélation", menu: "3 · Depuis 1970", question: "Quel territoire se réchauffe le plus vite depuis 1970 ?" },
-  { slug: "futur", temps: "Révélation", menu: "4 · En 2050", question: "Quel écart en 2050 ?" },
+  { slug: "futur", temps: "Révélation", menu: "4 · D'ici 2100", question: "Quel écart de température en 2050, et jusqu'en 2100 ?" },
   { slug: "pluie", temps: "Révélation", menu: "5 · Pluie", question: "La pluie suit-elle la chaleur ?" },
 ];
 

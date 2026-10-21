@@ -57,3 +57,13 @@ input[type="range"] { cursor: pointer; }
 
 .infobulle { opacity: 0; transform: translateY(10px) scale(0.97); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .carte-territoire:hover .infobulle, .carte-territoire:focus-within .infobulle, .carte-territoire:focus .infobulle { opacity: 1; transform: none; }
+
+/* Écrans tactiles (pas de survol) : les infos des territoires sont affichées sous la carte, sans geste à faire */
+@media (hover: none) {
+  .infobulle { position: static; opacity: 1; transform: none; pointer-events: auto; margin-top: 1rem; width: 100%; }
+}
+
+/* Mobile : l'en-tête n'est plus collant (voir Header.astro), donc pas de décalage pour les ancres */
+@media (max-width: 639px) {
+  html { scroll-padding-top: 0; }
+}

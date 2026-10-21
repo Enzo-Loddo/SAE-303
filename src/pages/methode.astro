@@ -55,7 +55,10 @@ import { SITE } from "../config/site.js";
         un groupe supplémentaire) sont écartés : 46 560 lignes.
       </li>
       <li>
-        <strong>Mois vides.</strong> 16 mois sans valeur sont retirés. Ils ne sont ni remplacés par zéro ni estimés.
+        <strong>Mois vides et mois absents.</strong> Ce sont deux choses différentes. 16 lignes du fichier d'origine ont un mois
+        sans valeur : elles sont retirées. Par ailleurs, depuis 1970, 43 mois manquent tout simplement à l'intérieur des séries
+        (aucune ligne). Dans les deux cas, rien n'est remplacé par zéro ni estimé : une année incomplète n'est pas comptée
+        (voir « Température moyenne » ci-dessous).
       </li>
       <li>
         <strong>Valeurs.</strong> Aucune valeur de température ou de pluie n'est modifiée : elles sont identiques aux fichiers d'origine.
@@ -112,6 +115,7 @@ import { SITE } from "../config/site.js";
       <li><strong>Projections par paliers, pas par années.</strong> Elles décrivent « le territoire quand le monde atteint +1,5, +2 ou +3 °C », pas une date. Pour parler de 2030, 2050 et 2100, nous classons les trois niveaux de réchauffement de chaque territoire par valeur croissante (le plus bas devient 2030, le suivant 2050, le plus élevé 2100). C'est une convention de lecture, pas une date prévue par Météo-France.</li>
       <li><strong>Moyenne spatiale non pondérée.</strong> Les mailles des projections ne sont pas pondérées par leur surface.</li>
       <li><strong>Température moyenne approchée.</strong> (TN + TX) / 2 n'est pas la moyenne réelle de la journée.</li>
+      <li><strong>Fond de carte externe.</strong> Les cartes de la question 2 chargent leur fond (relief) depuis OpenTopoMap, un service tiers gratuit : s'il est indisponible, les stations restent affichées et listées sous les cartes, mais sans le relief.</li>
     </ul>
   </section>
 
@@ -126,12 +130,12 @@ import { SITE } from "../config/site.js";
           <tr><th scope="row" class="border border-line p-3">1 · Années chaudes</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur filtre les territoires et la période ; le résumé se recalcule.</td></tr>
           <tr><th scope="row" class="border border-line p-3">2 · Cartes des stations</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Carte à zoomer, avec survol et fenêtre d'information par station (Leaflet).</td></tr>
           <tr><th scope="row" class="border border-line p-3">3 · Évolution depuis 1970</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur choisit un territoire ; titre et chiffres se recalculent.</td></tr>
-          <tr><th scope="row" class="border border-line p-3">4 · Écart en 2050</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur choisit l'horizon (2030, 2050 ou 2100).</td></tr>
+          <tr><th scope="row" class="border border-line p-3">4 · D'ici 2100</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Le lecteur choisit l'horizon (2030, 2050 ou 2100).</td></tr>
           <tr><th scope="row" class="border border-line p-3">5 · Pluie et chaleur</th><td class="border border-line p-3">B</td><td class="border border-line p-3">Valeurs réelles au survol. Un rendu au build (A) serait possible, mais perdrait la lecture des valeurs en °C et en %.</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="mt-3 max-w-3xl text-sm">Les fichiers envoyés au navigateur sont préfiltrés : seulement les colonnes utiles, deux décimales. Les fichiers bruts du défi ne sont pas dans le dépôt.</p>
+    <p class="mt-3 max-w-3xl text-sm">Les fichiers envoyés au navigateur sont préfiltrés : seulement les colonnes utiles, deux décimales. Les fichiers bruts du défi (dont le fichier mensuel de 21 Mo) ne sont plus dans la version actuelle du dépôt : ils ont été retirés, mais restent présents dans l'historique Git des premières versions.</p>
   </section>
 
   <section aria-labelledby="t-donnees" class="mt-16">
